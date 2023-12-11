@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
-import { Input, Button, Icon } from 'react-native-elements';
-import { FontAwesome5 } from 'react-native-vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+import {Input, Button, Icon} from 'react-native-elements';
+// import {FontAwesome5} from 'react-native-vector-icons';
+import {useNavigation} from '@react-navigation/native';
 
 function Login() {
   const navigation = useNavigation();
@@ -56,24 +57,22 @@ function Login() {
 
       {/* Line */}
       <View style={styles.lineStyle}>
-        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+        <View style={styles.lineText} />
         <View>
-          <Text style={{ width: 50, textAlign: 'center' }}>Or</Text>
+          <Text style={styles.text_4}>Or</Text>
         </View>
-        <View style={{ flex: 1, height: 1, backgroundColor: 'black' }} />
+        <View style={styles.viewStyle} />
       </View>
 
       {/* Image */}
       <View style={styles.boxStyle}>
         <TouchableOpacity
           onPress={() => navigation.navigate('#')}
-          style={styles.imageStyle}
-        >
+          style={styles.imageStyle}>
           <Image
-            style={{ width: 80, height: 80 }}
+            style={styles.imageSource}
             source={{
-              uri:
-                'https://www.transparentpng.com/thumb/google-logo/colorful-google-logo-transparent-clipart-download-u3DWLj.png',
+              uri: 'https://www.transparentpng.com/thumb/google-logo/colorful-google-logo-transparent-clipart-download-u3DWLj.png',
             }}
           />
         </TouchableOpacity>
@@ -83,7 +82,8 @@ function Login() {
   );
 }
 
-export default function App() { return <Login />;
+export default function App() {
+  return <Login />;
 }
 
 const styles = StyleSheet.create({
@@ -100,6 +100,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  viewStyle: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'black',
+  },
+  text_4: {
+    width: 50,
+    textAlign: 'center',
+  },
   text2: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -115,6 +124,11 @@ const styles = StyleSheet.create({
   emailInput: {
     marginTop: 10,
     marginRight: 5,
+  },
+  lineText: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'black',
   },
   buttonStyle: {
     marginTop: 30,
@@ -141,6 +155,11 @@ const styles = StyleSheet.create({
     height: 80,
     marginLeft: 20,
   },
+  imageSource: {
+    width: 80,
+    height: 80,
+  },
+
   boxStyle: {
     flexDirection: 'row',
     marginTop: 30,
