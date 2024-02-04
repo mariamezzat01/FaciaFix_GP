@@ -28,6 +28,7 @@ import RegisterScreen2Doctors from './src/Screens/RegisterScreen2Doctors';
 import RegisterScreen2Patients from './src/Screens/RegisterScreen2Patients';
 import PatientsHomeScreen from './src/Screens/PatientsHomeScreen';
 import DrawerNavigationRoutes from './src/Screens/DrawerNavigationRoutes';
+import PatientsEditProfile from './src/Screens/PatientsEditProfile';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,11 @@ const Auth = () => {
       <Stack.Screen
         name="PatientsHomeScreen"
         component={PatientsHomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PatientsEditProfile"
+        component={PatientsEditProfile}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

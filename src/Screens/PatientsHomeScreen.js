@@ -1,171 +1,144 @@
-
 // Import React and Component
-import React, {useState, createRef} from 'react';
 import {
     StyleSheet,
-    TextInput,
     View,
     Text,
     ScrollView,
     Image,
-    Keyboard,
     TouchableOpacity,
-    KeyboardAvoidingView,
 } from 'react-native';
-
-import AsyncStorage from '@react-native-community/async-storage';
-import { BoxShadow } from 'react-native-shadow';
 
 import {images , colors} from '../assets/assets';
 
 const PatientsHomeScreen = ({navigation}) => {
-    const shadowOpt = {
-        width: 200,
-        height: 200,
-        color: '#000',
-        border: 10,
-        radius: 10,
-        opacity: 0.1,
-        x: 0,
-        y: 0,
-      };
     return (
         <View style={styles.mainBody}>
-        
-        <View style={styles.upperSection}>
-            <TouchableOpacity
-                onPress={() => navigation.navigate('LoginScreen')}
-                style={{margin: 20}}>
-                {   <Image source={images.backArrow}/> }
-            </TouchableOpacity>
-            <View style={styles.profileField}>
-                <View style={{flexDirection:'row'}}>
-                    <Image source={images.profile} style={{marginLeft:30, height:55, width:55}}/>
-                    <View style={{flexDirection:"column",marginLeft:20,marginTop:5}}>
-                        <Text style ={{fontSize:18,color:colors.white}}>
-                            Hello,
-                        </Text>
-                        <Text style ={styles.profileText}>
-                        Mohamed Ali
-                        </Text>
-                    </View>
-                </View>
+            <View style={styles.upperSection}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('LoginScreen')}
-                    style={styles.searchButton}>
-                    {   <Image 
-                        source={images.search}
-                        style={{width:23,height:23}} /> }
+                    style={{margin: 20}}>
+                    <Image source={images.backArrow}/>
+                </TouchableOpacity>
+                <View style={styles.profileField}>
+                    <View style={{flexDirection:'row'}}>
+                        <Image source={images.profilePicture} style={{marginLeft:30, height:55, width:55}}/>
+                        <View style={{flexDirection:"column",marginLeft:20,marginTop:5}}>
+                            <Text style ={{fontSize:18,color:colors.white}}>
+                                Hello,
+                            </Text>
+                            <Text style ={styles.profileText}>
+                            Mohamed Ali
+                            </Text>
+                        </View>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('LoginScreen')}
+                        style={styles.searchButton}>
+                        <Image source={images.search} style={{width:23,height:23}} /> 
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <ScrollView keyboardShouldPersistTaps="handled">
+                <View style={styles.lowerSection}>
+                    <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
+                        <Text style ={styles.header}>
+                            What do you need?
+                        </Text>
+                        <View style={styles.optionsContainer}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.optionButton}>
+                                {  
+                                <View  style={styles.option}>
+                                    <Image source={images.stethoscope} style={{width:40,height:40}} /> 
+                                    <Text style ={styles.optionText}> Doctors </Text>
+                                </View>
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.optionButton}>
+                                {  
+                                <View  style={styles.option}>
+                                    <Image source={images.results} style={{width:40,height:40}} /> 
+                                    <Text style ={styles.optionText}> Results </Text>
+                                </View>
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.optionButton}>
+                                {  
+                                <View  style={styles.option}>
+                                    <Image source={images.assessment} style={{width:40,height:40}} /> 
+                                    <Text style ={styles.optionText}> Detailed assessment </Text>
+                                </View>
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.optionButton}>
+                                {  
+                                <View  style={styles.option}>
+                                    <Image source={images.progress} style={{width:40,height:40}} /> 
+                                    <Text style ={styles.optionText}> Progress </Text>
+                                </View>
+                                }
+                            </TouchableOpacity>
+                        </View >
+                        <View style={styles.helpfulLinks}>
+                            <Text style ={styles.helpfulLinksHeader}>
+                                Helpful Links
+                            </Text>
+                            <ScrollView horizontal style={styles.scrollView}>
+                                <View style={styles.linksContainer}>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('LoginScreen')}
+                                        style={styles.linksButton}>
+                                    </TouchableOpacity>
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
+            <View style={styles.navBar}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('PatientsHomeScreen')}
+                    style={[styles.navBarButton, styles.activeButton]}>
+                    <Image source={images.home} style={styles.navBarIcon} /> 
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('LoginScreen')}
+                    style={styles.cameraButton}>
+                    <Image source={images.camera} style={styles.navBarIcon} /> 
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('PatientsEditProfile')}
+                    style={styles.navBarButton}>
+                    <Image source={images.profileGreen} style={styles.navBarIcon} /> 
                 </TouchableOpacity>
             </View>
-        </View>
-        <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.lowerSection}>
-            <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
-            
-                <Text style ={styles.header}>
-                    What do you need?
-                </Text>
-                <View style={styles.optionsContainer}>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('LoginScreen')}
-                        style={styles.optionButton}>
-                        {  
-                        <View  style={styles.option}>
-                            <Image 
-                            source={images.stethoscope}
-                            style={{width:40,height:40}} /> 
-                            <Text style ={styles.optionText}>
-                                Doctors
-                            </Text>
-                        </View>
-                        }
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('LoginScreen')}
-                        style={styles.optionButton}>
-                        {  
-                        <View  style={styles.option}>
-                            <Image 
-                            source={images.results}
-                            style={{width:40,height:40}} /> 
-                            <Text style ={styles.optionText}>
-                            Results
-                            </Text>
-                        </View>
-                        }
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('LoginScreen')}
-                        style={styles.optionButton}>
-                        {  
-                        <View  style={styles.option}>
-                            <Image 
-                            source={images.assessment}
-                            style={{width:40,height:40}} /> 
-                            <Text style ={styles.optionText}>
-                            Detailed assessment
-                            </Text>
-                        </View>
-                        }
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('LoginScreen')}
-                        style={styles.optionButton}>
-                        {  
-                        <View  style={styles.option}>
-                            <Image 
-                            source={images.progress}
-                            style={{width:40,height:40}} /> 
-                            <Text style ={styles.optionText}>
-                            Progress
-                            </Text>
-                        </View>
-                        }
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.helpfulLinks}>
-                    <Text style ={styles.helpfulLinksHeader}>
-                        Helpful Links
-                    </Text>
-                    <ScrollView horizontal style={styles.scrollView}>
-                        <View style={styles.linksContainer}>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.linksButton}>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-                </View>
-                
-            </View>
-           
-        </View>
-        </ScrollView>
-        
-        {/* <View style={styles.navBar}>
-
-        </View> */}
         </View>
     );
 };
@@ -184,10 +157,6 @@ const styles = StyleSheet.create({
         backgroundColor:colors.darkBlue,
         borderBottomLeftRadius:60,
     },
-    scrollView: {
-        flexDirection: 'row',
-        padding: 10,
-      },
     profileField:{
         flexDirection: 'row',
         justifyContent:'space-between',
@@ -215,11 +184,8 @@ const styles = StyleSheet.create({
         marginLeft: 35,
         marginRight: 35,
         color: colors.darkBlue,
-        fontSize: 19,
-    },
-    helpfulLinksHeader:{
-        color: colors.darkBlue,
-        fontSize: 19,
+        fontSize: 20,
+        fontWeight:"500",
     },
     optionsContainer:{
         flexDirection:'row',
@@ -245,13 +211,17 @@ const styles = StyleSheet.create({
         color:colors.white,
         textAlign:'center',
     },
+    helpfulLinksHeader:{
+        color: colors.darkBlue,
+        fontSize: 19,
+    },
     helpfulLinks:{
         borderRadius:20,
-        borderBottomColor:colors.lightGray,
-        borderLeftColor:colors.lightGray,
-        borderRightColor:colors.lightGray,
+        borderBottomColor:colors.mintGreen,
+        borderLeftColor:colors.mintGreen,
+        borderRightColor:colors.mintGreen,
         borderTopColor: colors.white,
-        borderWidth:1,
+        borderWidth:1.5,
         margin:30,
         flexDirection:'column',
         paddingLeft:10,
@@ -269,63 +239,50 @@ const styles = StyleSheet.create({
         height:110,
         borderRadius:20,
     },
-    label:{
-        marginTop: 20,
-        marginLeft: 35,
-        marginRight: 35,
-        color: colors.gray1,
-        fontSize: 16,
-    },
-    inputBar: {
+    scrollView: {
         flexDirection: 'row',
-        height: 40,
-        marginLeft: 35,
-        marginRight: 35,
-        margin: 10,
-        borderWidth:1,
-        borderRadius: 12,
-        borderColor: colors.borderColor,
-    },
-    backButton:{
-        margin: 20,
-    },
-    inputStyle: {
-        flex: 1,
-        color: colors.darkBlue,
-    },
-    buttonStyle: {
-        backgroundColor: colors.green,
-        color: colors.white,
-        width: 350,
-        height: 40,
-        alignItems: 'center',
-        borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
-        marginTop: 20,
-        marginBottom: 25,
-    },
-    buttonTextStyle: {
-        color: colors.white,
-        paddingVertical: 10,
-        fontSize: 16,
-    },
-    registerTextStyle: {
-        color: colors.gray2,
-        textAlign: 'center',
-        fontSize: 16,
-        alignSelf: 'center',
-        marginBottom:20,
-    },
-    a:{
-        fontWeight: 'bold',
-        color:colors.darkBlue,
+        padding: 10,
     },
     navBar:{
-        height:40,
-        borderRadius:10,
-        // backgroundColor: colors.white, 
-        // elevation: 30,
-       
+        height:50,
+        borderWidth:1.5,
+        borderColor:colors.mintGreen,
+        borderTopLeftRadius:15,
+        borderTopRightRadius:15,
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+    },
+    navBarButton:{
+        borderRadius:40,
+        width:50,
+        height:50,
+        marginLeft:20,
+        marginRight:20,
+        alignItems:'center',
+        justifyContent:'center',
+        marginTop:5,
+    },
+    activeButton:{
+        backgroundColor:colors.mintGreen,
+    },
+    navBarIcon:{
+        width:30,
+        height:30,
+        padding:10,
+    },
+    cameraButton:{
+        backgroundColor:colors.green,
+        width:60,
+        height:60,
+        borderRadius:40,
+        borderColor:'#DCDCDC',
+        borderTopWidth:1,
+        borderRightWidth:2,
+        borderLeftWidth:2,
+        borderBottomWidth:5,
+        marginBottom:45,
+        alignItems:'center',
+        justifyContent:'center',
     },
 });

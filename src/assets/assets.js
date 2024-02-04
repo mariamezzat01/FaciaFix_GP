@@ -12,7 +12,7 @@ export const images = {
     patient:require("./images/patient.png"),
     doctor:require("./images/doctor.png"),
     backArrow:require("./images/return.png"),
-    profile:require("./images/pp.png"),
+    profilePicture:require("./images/pp.png"),
     search:require("./images/search.png"),
     progress:require("./images/progress.png"),
     stethoscope:require("./images/stethoscope.png"),
@@ -20,7 +20,10 @@ export const images = {
     results:require("./images/results.png"),
     right:require("./images/right.png"),
     wrong:require("./images/wrong.png"),
-    
+    camera:require("./images/camera.png"),
+    home:require("./images/home.png"),
+    profileGreen:require("./images/profileGreen.png"),
+    profileBlue:require("./images/profileBlue.png"),
 };
 
 export const colors = {

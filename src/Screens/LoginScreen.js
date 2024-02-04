@@ -237,7 +237,7 @@ const LoginScreen = ({navigation}) => {
             </TouchableOpacity>
             <Text
                 style={styles.registerTextStyle}
-                onPress={() => navigation.navigate('RegisterScreen')}>
+                onPress={() => navigation.navigate('PatientsHomeScreen')}>
                 Don’t have an account? <Text style={styles.a}>Create one</Text> 
             </Text>
             </View>
@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
         marginRight: 35,
         color: colors.darkBlue,
         fontSize: 23,
+        fontWeight:"500",
     },
     label:{
         marginTop: 20,
