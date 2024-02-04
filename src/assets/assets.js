@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export const images = {
     faciaFixLogo:require("./images/FaciaFix.png"),
     upperImage:require("./images/upper_image1.png"),
@@ -27,15 +28,15 @@ export const images = {
 };
 
 export const colors = {
-    white:'#ffffff',
-    blueFF:"#104773",
-    blueLogo:'#005898',
-    darkBlue:'#173156',
-    darkRed:'#5D002A',
-    gray1:'#444444',
-    lightGray:'#8b9cb5',
-    gray2:'#393B3E',
-    borderColor: '#dadae8',
-    green:'#60ACB6',
-    mintGreen:'#DAECF0',
+  white: '#ffffff',
+  blueFF: '#104773',
+  blueLogo: '#005898',
+  darkBlue: '#173156',
+  darkRed: '#5D002A',
+  gray1: '#444444',
+  lightGray: '#8b9cb5',
+  gray2: '#393B3E',
+  borderColor: '#dadae8',
+  green: '#60ACB6',
+  mintGreen: '#DAECF0',
 };

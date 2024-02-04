@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // import React from 'react';
 // import LoginScreen from './src/Screens/login';
 
@@ -29,6 +30,7 @@ import RegisterScreen2Patients from './src/Screens/RegisterScreen2Patients';
 import PatientsHomeScreen from './src/Screens/PatientsHomeScreen';
 import DrawerNavigationRoutes from './src/Screens/DrawerNavigationRoutes';
 import PatientsEditProfile from './src/Screens/PatientsEditProfile';
+import DoctorListScreen from './src/Screens/doctorListScreen';
 
 const Stack = createStackNavigator();
 
@@ -62,8 +64,13 @@ const Auth = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="PatientsEditProfile"
-        component={PatientsEditProfile}
+      name="PatientsEditProfile"
+      component={PatientsEditProfile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="doctorListScreen"
+        component={DoctorListScreen}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

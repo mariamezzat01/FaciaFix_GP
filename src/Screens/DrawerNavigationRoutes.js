@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // Example of Splash, Login and Sign Up in React Native
 // https://aboutreact.com/react-native-login-and-signup/
 
@@ -68,7 +69,7 @@ const settingScreenStack = ({navigation}) => {
   );
 };
 
-const DrawerNavigatorRoutes = (props) => {
+const DrawerNavigatorRoutes = props => {
   return (
     <Drawer.Navigator
       drawerContentOptions={{

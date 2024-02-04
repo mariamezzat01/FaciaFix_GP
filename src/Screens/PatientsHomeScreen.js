@@ -139,6 +139,12 @@ const PatientsHomeScreen = ({navigation}) => {
                     <Image source={images.profileGreen} style={styles.navBarIcon} /> 
                 </TouchableOpacity>
             </View>
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('LoginScreen')}
+            style={styles.searchButton}>
+            {<Image source={images.search} style={{width: 23, height: 23}} />}
+          </TouchableOpacity>
         </View>
     );
 };

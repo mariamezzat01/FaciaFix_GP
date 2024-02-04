@@ -1,69 +1,68 @@
+/* eslint-disable prettier/prettier */
 
 // Import React and Component
 import React, {useState, createRef} from 'react';
 import {
-    StyleSheet,
-    TextInput,
-    View,
-    Text,
-    ScrollView,
-    Image,
-    Keyboard,
-    TouchableOpacity,
-    KeyboardAvoidingView,
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  ScrollView,
+  Image,
+  Keyboard,
+  TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
 import Loader from './Components/loader';
-import {images , colors} from '../assets/assets';
+import {images, colors} from '../assets/assets';
 import Input from '../assets/input';
 import emailValidator from 'email-validator';
 
-
 const LoginScreen = ({navigation}) => {
-    const [userEmail, setUserEmail] = useState('');
-    const [userPassword, setUserPassword] = useState('');
-    const [isPasswordShown, setIsPasswordShown] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [errortext, setErrortext] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userPassword, setUserPassword] = useState('');
+  const [isPasswordShown, setIsPasswordShown] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
 
-    const passwordInputRef = createRef();
-    const [isRegistraionSuccess,setIsRegistraionSuccess ] = useState(false);
-    
+  const passwordInputRef = createRef();
+  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
-    const handleSubmitPress = () => {
+  const handleSubmitPress = () => {
     setErrortext('');
     if (!userEmail) {
-        alert('Please fill Email');
-        return;
+      alert('Please fill Email');
+      return;
     }
     if (!userPassword) {
-        alert('Please fill Password');
-        return;
+      alert('Please fill Password');
+      return;
     }
     if (!userEmail) {
-        alert('Please fill Email');
-        return;
+      alert('Please fill Email');
+      return;
     } else if (!emailValidator.validate(userEmail)) {
-        alert('Please enter a valid email address');
-        return;
+      alert('Please enter a valid email address');
+      return;
     }
     // Password validation
     if (!userPassword) {
-        alert('Please fill Password');
-        return;
+      alert('Please fill Password');
+      return;
     } else if (userPassword.length < 6) {
-        alert('Password must be at least 6 characters long');
-        return;
+      alert('Password must be at least 6 characters long');
+      return;
     }
     setLoading(true);
     let dataToSend = {email: userEmail, password: userPassword};
     let formBody = [];
     for (let key in dataToSend) {
-        let encodedKey = encodeURIComponent(key);
-        let encodedValue = encodeURIComponent(dataToSend[key]);
-        formBody.push(encodedKey + '=' + encodedValue);
+      let encodedKey = encodeURIComponent(key);
+      let encodedValue = encodeURIComponent(dataToSend[key]);
+      formBody.push(encodedKey + '=' + encodedValue);
     }
     formBody = formBody.join('&');
 
@@ -98,35 +97,34 @@ const LoginScreen = ({navigation}) => {
     //   });
     setLoading(false);
     navigation.replace('DrawerNavigationRoutes');
-};
+  };
 
-    return (
-        <View style={styles.mainBody}>
-        <Loader loading={loading} />
-        <ScrollView keyboardShouldPersistTaps="handled">
+  return (
+    <View style={styles.mainBody}>
+      <Loader loading={loading} />
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.upperSection}>
-            <Image
-            source={images.upperImage}
-            style={styles.roundedImage}
-            />
+          <Image source={images.upperImage} style={styles.roundedImage} />
         </View>
         <KeyboardAvoidingView enabled>
-        <View style={styles.lowerSection}>
-            <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
-            <Text style ={styles.header}>
-                Login to your Account
-            </Text>
-            <Input  
+          <View style={styles.lowerSection}>
+            <View
+              style={{backgroundColor: colors.white, borderTopRightRadius: 60}}>
+              <Text style={styles.header}>Login to your Account</Text>
+              <Input
                 label="Email Address"
                 imageSource={images.mailIcon}
-                onChangeText={(UserEmail) => setUserEmail(UserEmail)}
+                onChangeText={UserEmail => setUserEmail(UserEmail)}
                 placeholder="Enter your email address"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                onSubmitEditing={() => { console.log('onSubmitEditing called'); passwordInputRef.current && passwordInputRef.current.focus();}}
+                onSubmitEditing={() => {
+                  console.log('onSubmitEditing called');
+                  passwordInputRef.current && passwordInputRef.current.focus();
+                }}
                 returnKeyType="next"
-            />
-            {/* <Text style ={styles.label}>
+              />
+              {/* <Text style ={styles.label}>
                 Email Address
             </Text>
             <View style={styles.inputBar}>
@@ -152,7 +150,7 @@ const LoginScreen = ({navigation}) => {
                 blurOnSubmit={false}
                 />
             </View> */}
-            {/* <Input
+              {/* <Input
                 label="Password"
                 imageSource={images.passwordIcon}
                 PasswordShown={isPasswordShown}
@@ -181,71 +179,55 @@ const LoginScreen = ({navigation}) => {
                     ,
                 }}
             /> */}
-            <Text style ={styles.label}>
-                Password
-            </Text>
-            <View style={styles.inputBar}>
-                <Image
-                source={images.passwordIcon}
-                style={styles.icon}
-                />
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.passwordIcon} style={styles.icon} />
                 <TextInput
-                style={styles.inputStyle}
-                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
-                placeholder="Enter your Password" //12345
-                placeholderTextColor="#8b9cb5"
-                keyboardType="default"
-                ref={passwordInputRef}
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-                secureTextEntry={isPasswordShown}
-                underlineColorAndroid="#f000"
-                returnKeyType="next"
+                  style={styles.inputStyle}
+                  onChangeText={UserPassword => setUserPassword(UserPassword)}
+                  placeholder="Enter your Password" //12345
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="default"
+                  ref={passwordInputRef}
+                  onSubmitEditing={Keyboard.dismiss}
+                  blurOnSubmit={false}
+                  secureTextEntry={isPasswordShown}
+                  underlineColorAndroid="#f000"
+                  returnKeyType="next"
                 />
                 <TouchableOpacity
-                onPress={() => setIsPasswordShown(!isPasswordShown)}
-                style={{
-                    position: "absolute",
-                    right: 12
-                }}
-                >
-                {
-                    isPasswordShown == false ? (
-                        <Image
-                        source={images.eyeClosedIcon}
-                        style={styles.icon}
-                    />
-                    ) : (
-                        <Image
-                        source={images.eyeOpenIcon}
-                        style={styles.icon}
-                    />
-                    )
-                }
+                  onPress={() => setIsPasswordShown(!isPasswordShown)}
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                  }}>
+                  {isPasswordShown == false ? (
+                    <Image source={images.eyeClosedIcon} style={styles.icon} />
+                  ) : (
+                    <Image source={images.eyeOpenIcon} style={styles.icon} />
+                  )}
                 </TouchableOpacity>
-            </View>
-            {errortext != '' ? (
-                <Text style={styles.errorTextStyle}>
-                {errortext}
-                </Text>
-            ) : null}
-            <TouchableOpacity
+              </View>
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              ) : null}
+              <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
                 onPress={handleSubmitPress}>
                 <Text style={styles.buttonTextStyle}>Login</Text>
-            </TouchableOpacity>
-            <Text
+              </TouchableOpacity>
+              <Text
                 style={styles.registerTextStyle}
                 onPress={() => navigation.navigate('PatientsHomeScreen')}>
                 Don’t have an account? <Text style={styles.a}>Create one</Text> 
             </Text>
             </View>
-        </View>
+          </View>
         </KeyboardAvoidingView>
-        </ScrollView>
-        </View>
-    );
+      </ScrollView>
+    </View>
+  );
 };
 
 export default LoginScreen;
