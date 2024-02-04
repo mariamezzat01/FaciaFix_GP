@@ -1,6 +1,4 @@
 /* eslint-disable prettier/prettier */
-
-// Import React and Component
 import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
@@ -214,12 +212,13 @@ const LoginScreen = ({navigation}) => {
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={handleSubmitPress}>
+                // onPress={handleSubmitPress}>
+                onPress={() => navigation.navigate('PatientsHomeScreen')}>
                 <Text style={styles.buttonTextStyle}>Login</Text>
               </TouchableOpacity>
               <Text
                 style={styles.registerTextStyle}
-                onPress={() => navigation.navigate('PatientsHomeScreen')}>
+                onPress={() => navigation.navigate('RegisterScreen')}>
                 Don’t have an account? <Text style={styles.a}>Create one</Text> 
             </Text>
             </View>

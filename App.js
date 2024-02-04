@@ -1,27 +1,11 @@
 /* eslint-disable prettier/prettier */
-// import React from 'react';
-// import LoginScreen from './src/Screens/login';
-
-// const App = () => {
-//   return <LoginScreen />;
-// };
-
-// export default App;
-
-//...................................... start of new code....................................................
-
-// Example of Splash, Login and Sign Up in React Native
-// https://aboutreact.com/react-native-login-and-signup/
 import 'react-native-gesture-handler';
 
-// Import React and Component
 import React from 'react';
 
-// Import Navigators from React Navigation
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-// Import Screens
 import SplashScreen from './src/Screens/SplashScreen';
 import LoginScreen from './src/Screens/LoginScreen';
 import RegisterScreen from './src/Screens/RegisterScreen';

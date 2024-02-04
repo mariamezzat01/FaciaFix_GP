@@ -1,6 +1,4 @@
 /* eslint-disable prettier/prettier */
-
-// Import React and Component
 import React, {useState, createRef} from 'react';
 import {
   StyleSheet,
@@ -432,7 +430,6 @@ const RegisterScreen = ({navigation}) => {
                     )}
                     <Text
                       style={{
-                        fontsize: 13,
                         color: colors.darkBlue,
                         marginLeft: 5,
                         marginTop: -2,
@@ -495,7 +492,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   container: {
-    marginTop: -50,
+    // marginTop: -50,
   },
   header: {
     marginTop: 25,

@@ -1,4 +1,3 @@
-// Import React and Component
 import {
     StyleSheet,
     View,
@@ -11,140 +10,140 @@ import {
 import {images , colors} from '../assets/assets';
 
 const PatientsHomeScreen = ({navigation}) => {
-    return (
-        <View style={styles.mainBody}>
-            <View style={styles.upperSection}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('LoginScreen')}
-                    style={{margin: 20}}>
-                    <Image source={images.backArrow}/>
-                </TouchableOpacity>
-                <View style={styles.profileField}>
-                    <View style={{flexDirection:'row'}}>
-                        <Image source={images.profilePicture} style={{marginLeft:30, height:55, width:55}}/>
-                        <View style={{flexDirection:"column",marginLeft:20,marginTop:5}}>
-                            <Text style ={{fontSize:18,color:colors.white}}>
-                                Hello,
-                            </Text>
-                            <Text style ={styles.profileText}>
-                            Mohamed Ali
-                            </Text>
+  return (
+    <View style={styles.mainBody}>
+      <View style={styles.upperSection}>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('LoginScreen')}
+            style={{margin: 20}}>
+            <Image source={images.backArrow}/>
+        </TouchableOpacity>
+        <View style={styles.profileField}>
+            <View style={{flexDirection:'row'}}>
+                <Image source={images.profilePicture} style={{marginLeft:30, height:55, width:55}}/>
+                <View style={{flexDirection:"column",marginLeft:20,marginTop:5}}>
+                    <Text style ={{fontSize:18,color:colors.white}}>
+                        Hello,
+                    </Text>
+                    <Text style ={styles.profileText}>
+                    Mohamed Ali
+                    </Text>
+                </View>
+            </View>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('LoginScreen')}
+                style={styles.searchButton}>
+                <Image source={images.search} style={{width:23,height:23}} /> 
+            </TouchableOpacity>
+        </View>
+    </View>
+    <ScrollView keyboardShouldPersistTaps="handled">
+        <View style={styles.lowerSection}>
+            <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
+                <Text style ={styles.header}>
+                    What do you need?
+                </Text>
+                <View style={styles.optionsContainer}>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('doctorListScreen')}
+                        style={styles.optionButton}>
+                        {  
+                        <View  style={styles.option}>
+                            <Image source={images.stethoscope} style={{width:40,height:40}} /> 
+                            <Text style ={styles.optionText}> Doctors </Text>
                         </View>
-                    </View>
+                        }
+                    </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => navigation.navigate('LoginScreen')}
-                        style={styles.searchButton}>
-                        <Image source={images.search} style={{width:23,height:23}} /> 
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <ScrollView keyboardShouldPersistTaps="handled">
-                <View style={styles.lowerSection}>
-                    <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
-                        <Text style ={styles.header}>
-                            What do you need?
-                        </Text>
-                        <View style={styles.optionsContainer}>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.optionButton}>
-                                {  
-                                <View  style={styles.option}>
-                                    <Image source={images.stethoscope} style={{width:40,height:40}} /> 
-                                    <Text style ={styles.optionText}> Doctors </Text>
-                                </View>
-                                }
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.optionButton}>
-                                {  
-                                <View  style={styles.option}>
-                                    <Image source={images.results} style={{width:40,height:40}} /> 
-                                    <Text style ={styles.optionText}> Results </Text>
-                                </View>
-                                }
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.optionButton}>
-                                {  
-                                <View  style={styles.option}>
-                                    <Image source={images.assessment} style={{width:40,height:40}} /> 
-                                    <Text style ={styles.optionText}> Detailed assessment </Text>
-                                </View>
-                                }
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('LoginScreen')}
-                                style={styles.optionButton}>
-                                {  
-                                <View  style={styles.option}>
-                                    <Image source={images.progress} style={{width:40,height:40}} /> 
-                                    <Text style ={styles.optionText}> Progress </Text>
-                                </View>
-                                }
-                            </TouchableOpacity>
-                        </View >
-                        <View style={styles.helpfulLinks}>
-                            <Text style ={styles.helpfulLinksHeader}>
-                                Helpful Links
-                            </Text>
-                            <ScrollView horizontal style={styles.scrollView}>
-                                <View style={styles.linksContainer}>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('LoginScreen')}
-                                        style={styles.linksButton}>
-                                    </TouchableOpacity>
-                                </View>
-                            </ScrollView>
+                        style={styles.optionButton}>
+                        {  
+                        <View  style={styles.option}>
+                            <Image source={images.results} style={{width:40,height:40}} /> 
+                            <Text style ={styles.optionText}> Results </Text>
                         </View>
-                    </View>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('LoginScreen')}
+                        style={styles.optionButton}>
+                        {  
+                        <View  style={styles.option}>
+                            <Image source={images.assessment} style={{width:40,height:40}} /> 
+                            <Text style ={styles.optionText}> Detailed assessment </Text>
+                        </View>
+                        }
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('LoginScreen')}
+                        style={styles.optionButton}>
+                        {  
+                        <View  style={styles.option}>
+                            <Image source={images.progress} style={{width:40,height:40}} /> 
+                            <Text style ={styles.optionText}> Progress </Text>
+                        </View>
+                        }
+                    </TouchableOpacity>
+                </View >
+                <View style={styles.helpfulLinks}>
+                    <Text style ={styles.helpfulLinksHeader}>
+                        Helpful Links
+                    </Text>
+                    <ScrollView horizontal style={styles.scrollView}>
+                        <View style={styles.linksContainer}>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('LoginScreen')}
+                                style={styles.linksButton}>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </View>
-            </ScrollView>
-            <View style={styles.navBar}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('PatientsHomeScreen')}
-                    style={[styles.navBarButton, styles.activeButton]}>
-                    <Image source={images.home} style={styles.navBarIcon} /> 
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('LoginScreen')}
-                    style={styles.cameraButton}>
-                    <Image source={images.camera} style={styles.navBarIcon} /> 
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('PatientsEditProfile')}
-                    style={styles.navBarButton}>
-                    <Image source={images.profileGreen} style={styles.navBarIcon} /> 
-                </TouchableOpacity>
             </View>
-          </View>
+        </View>
+    </ScrollView>
+    <View style={styles.navBar}>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PatientsHomeScreen')}
+            style={[styles.navBarButton, styles.activeButton]}>
+            <Image source={images.home} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('LoginScreen')}
+            style={styles.cameraButton}>
+            <Image source={images.camera} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PatientsEditProfile')}
+            style={styles.navBarButton}>
+            <Image source={images.profileGreen} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+    </View>
+          {/* </View>
           <TouchableOpacity
             onPress={() => navigation.navigate('LoginScreen')}
             style={styles.searchButton}>
             {<Image source={images.search} style={{width: 23, height: 23}} />}
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
     );
 };

@@ -1,4 +1,3 @@
-// Import React and Component
 import React, {useState, createRef} from 'react';
 import {
     StyleSheet,

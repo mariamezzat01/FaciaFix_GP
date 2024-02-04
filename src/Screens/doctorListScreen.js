@@ -133,6 +133,23 @@ const PatientsHomeScreen = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
+      <View style={styles.navBar}>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PatientsHomeScreen')}
+            style={styles.navBarButton}>
+            <Image source={images.home} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('LoginScreen')}
+            style={styles.cameraButton}>
+            <Image source={images.camera} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={() => navigation.navigate('PatientsEditProfile')}
+            style={styles.navBarButton}>
+            <Image source={images.profileGreen} style={styles.navBarIcon} /> 
+        </TouchableOpacity>
+    </View>
     </View>
   );
 };
@@ -284,10 +301,46 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.darkBlue,
   },
-  navBar: {
-    height: 40,
-    borderRadius: 10,
-    // backgroundColor: colors.white,
-    // elevation: 30,
-  },
+  navBar:{
+    height:50,
+    borderWidth:1.5,
+    borderColor:colors.mintGreen,
+    borderTopLeftRadius:15,
+    borderTopRightRadius:15,
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center',
+},
+navBarButton:{
+    borderRadius:40,
+    width:50,
+    height:50,
+    marginLeft:20,
+    marginRight:20,
+    alignItems:'center',
+    justifyContent:'center',
+    marginTop:5,
+},
+activeButton:{
+    backgroundColor:colors.mintGreen,
+},
+navBarIcon:{
+    width:30,
+    height:30,
+    padding:10,
+},
+cameraButton:{
+    backgroundColor:colors.green,
+    width:60,
+    height:60,
+    borderRadius:40,
+    borderColor:'#DCDCDC',
+    borderTopWidth:1,
+    borderRightWidth:2,
+    borderLeftWidth:2,
+    borderBottomWidth:5,
+    marginBottom:45,
+    alignItems:'center',
+    justifyContent:'center',
+},
 });

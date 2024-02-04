@@ -1,5 +1,3 @@
-
-// Import React and Component
 import React, {useState, createRef} from 'react';
 import {
     StyleSheet,
@@ -168,7 +166,7 @@ const PatientsEditProfile = ({navigation}) => {
         <View style={styles.mainBody}>
             <View style={styles.upperSection}>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('LoginScreen')}
+                    onPress={() => navigation.navigate('PatientsHomeScreen')}
                     style={{margin: 20}}>
                     {   <Image source={images.backArrow}/> }
                 </TouchableOpacity>
@@ -210,7 +208,7 @@ const PatientsEditProfile = ({navigation}) => {
                             style={styles.inputStyle}
                             onChangeText={(FirstName) => setFirstName(FirstName)}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter your First Name"
+                            placeholder="Mohamed"
                             placeholderTextColor="#8b9cb5"
                             autoCapitalize="sentences"
                             returnKeyType="next"
@@ -232,7 +230,7 @@ const PatientsEditProfile = ({navigation}) => {
                             style={styles.inputStyle}
                             onChangeText={(SecondName) => setSecondName(SecondName)}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter your Second Name"
+                            placeholder="Ali"
                             placeholderTextColor="#8b9cb5"
                             autoCapitalize="sentences"
                             returnKeyType="next"
@@ -255,7 +253,7 @@ const PatientsEditProfile = ({navigation}) => {
                             style={styles.inputStyle}
                             onChangeText={(Email) => setEmail(Email)}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter your Email"
+                            placeholder="mohamed@gmail.com"
                             placeholderTextColor="#8b9cb5"
                             keyboardType="email-address"
                             ref={emailInputRef}
@@ -281,7 +279,7 @@ const PatientsEditProfile = ({navigation}) => {
                             onFocus={handlePasswordFocus}
                             onBlur={handlePasswordBlur}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter your Password"
+                            placeholder="********"
                             placeholderTextColor="#8b9cb5"
                             ref={passwordInputRef}
                             returnKeyType="next"
@@ -347,7 +345,7 @@ const PatientsEditProfile = ({navigation}) => {
                                 setConfirmPassword(ConfirmPassword)
                             }
                             underlineColorAndroid="#f000"
-                            placeholder="Re-Enter your Password"
+                            placeholder="********"
                             placeholderTextColor="#8b9cb5"
                             ref={confirmPasswordInputRef}
                             secureTextEntry={isPasswordShown}
@@ -394,7 +392,7 @@ const PatientsEditProfile = ({navigation}) => {
                                 setmobileNumber(mobileNumber)
                             }
                             underlineColorAndroid="#f000"
-                            placeholder="Enter Mobile Number"
+                            placeholder="01234567891"
                             keyboardType="numeric"
                             placeholderTextColor="#8b9cb5"
                             autoCapitalize="none"
@@ -415,7 +413,7 @@ const PatientsEditProfile = ({navigation}) => {
                             style={styles.inputStyle}
                             onChangeText={(Age) => setAge(Age)}
                             underlineColorAndroid="#f000"
-                            placeholder="Enter your Age"
+                            placeholder="35"
                             placeholderTextColor="#8b9cb5"
                             keyboardType="numeric"
                             ref={ageInputRef}
@@ -462,7 +460,7 @@ const PatientsEditProfile = ({navigation}) => {
             <View style={styles.navBar}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('PatientsHomeScreen')}
-                    style={[styles.navBarButton, styles.activeButton]}>
+                    style={styles.navBarButton}>
                     <Image source={images.home} style={styles.navBarIcon} /> 
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -472,7 +470,7 @@ const PatientsEditProfile = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('PatientsEditProfile')}
-                    style={styles.navBarButton}>
+                    style={[styles.navBarButton,  styles.activeButton]}>
                     <Image source={images.profileGreen} style={styles.navBarIcon} /> 
                 </TouchableOpacity>
             </View>
