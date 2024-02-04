@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Loader from './Components/loader';
 import {images , colors} from '../assets/assets';
 import Input from '../assets/input';
+import emailValidator from 'email-validator';
 
 
 const LoginScreen = ({navigation}) => {
@@ -28,10 +29,7 @@ const LoginScreen = ({navigation}) => {
     const [errortext, setErrortext] = useState('');
 
     const passwordInputRef = createRef();
-    const [
-        isRegistraionSuccess,
-        setIsRegistraionSuccess
-    ] = useState(false);
+    const [isRegistraionSuccess,setIsRegistraionSuccess ] = useState(false);
     
 
     const handleSubmitPress = () => {
@@ -42,6 +40,21 @@ const LoginScreen = ({navigation}) => {
     }
     if (!userPassword) {
         alert('Please fill Password');
+        return;
+    }
+    if (!userEmail) {
+        alert('Please fill Email');
+        return;
+    } else if (!emailValidator.validate(userEmail)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+    // Password validation
+    if (!userPassword) {
+        alert('Please fill Password');
+        return;
+    } else if (userPassword.length < 6) {
+        alert('Password must be at least 6 characters long');
         return;
     }
     setLoading(true);
@@ -85,7 +98,7 @@ const LoginScreen = ({navigation}) => {
     //   });
     setLoading(false);
     navigation.replace('DrawerNavigationRoutes');
-    };
+};
 
     return (
         <View style={styles.mainBody}>
@@ -139,7 +152,7 @@ const LoginScreen = ({navigation}) => {
                 blurOnSubmit={false}
                 />
             </View> */}
-            <Input
+            {/* <Input
                 label="Password"
                 imageSource={images.passwordIcon}
                 PasswordShown={isPasswordShown}
@@ -167,8 +180,8 @@ const LoginScreen = ({navigation}) => {
                         )
                     ,
                 }}
-            />
-            {/* <Text style ={styles.label}>
+            /> */}
+            <Text style ={styles.label}>
                 Password
             </Text>
             <View style={styles.inputBar}>
@@ -178,13 +191,11 @@ const LoginScreen = ({navigation}) => {
                 />
                 <TextInput
                 style={styles.inputStyle}
-                onChangeText={(UserPassword) =>
-                    setUserPassword(UserPassword)
-                }
+                onChangeText={(UserPassword) => setUserPassword(UserPassword)}
                 placeholder="Enter your Password" //12345
                 placeholderTextColor="#8b9cb5"
                 keyboardType="default"
-                // ref={passwordInputRef}
+                ref={passwordInputRef}
                 onSubmitEditing={Keyboard.dismiss}
                 blurOnSubmit={false}
                 secureTextEntry={isPasswordShown}
@@ -212,7 +223,7 @@ const LoginScreen = ({navigation}) => {
                     )
                 }
                 </TouchableOpacity>
-            </View> */}
+            </View>
             {errortext != '' ? (
                 <Text style={styles.errorTextStyle}>
                 {errortext}

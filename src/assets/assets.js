@@ -11,6 +11,16 @@ export const images = {
     female:require("./images/femenine.png"),
     patient:require("./images/patient.png"),
     doctor:require("./images/doctor.png"),
+    backArrow:require("./images/return.png"),
+    profile:require("./images/pp.png"),
+    search:require("./images/search.png"),
+    progress:require("./images/progress.png"),
+    stethoscope:require("./images/stethoscope.png"),
+    assessment:require("./images/assesement.png"),
+    results:require("./images/results.png"),
+    right:require("./images/right.png"),
+    wrong:require("./images/wrong.png"),
+    
 };
 
 export const colors = {
@@ -24,4 +34,5 @@ export const colors = {
     gray2:'#393B3E',
     borderColor: '#dadae8',
     green:'#60ACB6',
+    mintGreen:'#DAECF0',
 };
