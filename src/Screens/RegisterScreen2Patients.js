@@ -10,21 +10,28 @@ import {
     TouchableOpacity,
     ScrollView,
 } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import Loader from './Components/loader';
 import {images , colors} from '../assets/assets';
 import Input from '../assets/input';
 
+import Parse from 'parse/react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+
 const RegisterScreen2Patients = ({navigation})=> {
+    const route = useRoute();
+    // const navigation = useNavigation();
+
     const [gender, setGender] = useState('');
     const [age, setAge] = useState('');
+
     const [loading, setLoading] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [errortext, setErrortext] = useState('');
-    const [
-        isRegistraionSuccess,
-        setIsRegistraionSuccess
-    ] = useState(false);
+    // const [
+    //     isRegistraionSuccess,
+    //     setIsRegistraionSuccess
+    // ] = useState(false);
     
     const ageInputRef = createRef();
     const genderOptions = ['Male', 'Female'];
@@ -48,7 +55,32 @@ const RegisterScreen2Patients = ({navigation})=> {
           });
         };
 
-    const handleSubmitButton = () => {
+        const doUserSignUp = async () => {
+            const { firstName, secondName, email, password, mobileNumber,title } = route.params;
+    
+            return await Parse.User.signUp(email, password, {
+                firstName,
+                secondName,
+                mobileNumber,
+                title,
+                gender,
+                age,
+            })
+            .then((createdUser) => {
+                // Alert.alert(
+                //     'Success!',
+                //     `User ${createdUser.get('username')} was successfully created!`,
+                // );
+                navigation.navigate('PatientsHomeScreen');
+                // navigation.replace('Patients');
+                return true;
+            })
+            .catch((error) => {
+                Alert.alert('Error!', error.message);
+                return false;
+            });
+        };
+    const handleSubmitButton = async () => {
         setErrortext('');
         if (!age) {
         alert('Please fill Age');
@@ -58,20 +90,21 @@ const RegisterScreen2Patients = ({navigation})=> {
             alert('Please select your Gender');
             return;
         }
+        const signUpSuccess = await doUserSignUp();
 
         //Show Loader
         setLoading(true);
-        var dataToSend = {
-            age: age,
-            gender:gender,
-            };
-            var formBody = [];
-            for (var key in dataToSend) {
-            var encodedKey = encodeURIComponent(key);
-            var encodedValue = encodeURIComponent(dataToSend[key]);
-            formBody.push(encodedKey + '=' + encodedValue);
-            }
-            formBody = formBody.join('&');
+        // var dataToSend = {
+        //     age: age,
+        //     gender:gender,
+        //     };
+        //     var formBody = [];
+        //     for (var key in dataToSend) {
+        //     var encodedKey = encodeURIComponent(key);
+        //     var encodedValue = encodeURIComponent(dataToSend[key]);
+        //     formBody.push(encodedKey + '=' + encodedValue);
+        //     }
+        //     formBody = formBody.join('&');
     
             // fetch('http://localhost:3000/api/user/register', {
             //   method: 'POST',
@@ -102,40 +135,48 @@ const RegisterScreen2Patients = ({navigation})=> {
             //     setLoading(false);
             //     console.error(error);
             //   });
-            setLoading(false);
-            setIsRegistraionSuccess(true);
-            console.log(
-                'Registration Successful. Please Login to proceed'
-                );
+            // setLoading(false);
+            // setIsRegistraionSuccess(true);
+            // console.log(
+            //     'Registration Successful. Please Login to proceed'
+            //     );
+            //     if (signUpSuccess) {
+            //         return (
+            //         <View
+            //             style={{
+            //             flex: 1,
+            //             backgroundColor: '#307ecc',
+            //             justifyContent: 'center',
+            //             }}>
+            //             {/* <Image
+            //             // source={require('../../Image/success.png')}
+            //             style={{
+            //                 height: 150,
+            //                 resizeMode: 'contain',
+            //                 alignSelf: 'center'
+            //             }}
+            //             /> */}
+            //             <Text style={styles.successTextStyle}>
+            //             Registration Successful
+            //             </Text>
+            //             <TouchableOpacity
+            //             style={styles.buttonStyle}
+            //             activeOpacity={0.5}
+            //             onPress={() => navigation.navigate('LoginScreen')}>
+            //             <Text style={styles.buttonTextStyle}>Login Now</Text>
+            //             </TouchableOpacity>
+            //         </View>
+            //         );
+            //     }
+            if (signUpSuccess) {
+                // Show success message or navigate to next screen
+                console.log('Registration Successful. Please Login to proceed');
+            } else {
+                // Handle sign up failure
+                console.log('Registration failed');
+            }
 };
-if (isRegistraionSuccess) {
-    return (
-    <View
-        style={{
-        flex: 1,
-        backgroundColor: '#307ecc',
-        justifyContent: 'center',
-        }}>
-        {/* <Image
-        // source={require('../../Image/success.png')}
-        style={{
-            height: 150,
-            resizeMode: 'contain',
-            alignSelf: 'center'
-        }}
-        /> */}
-        <Text style={styles.successTextStyle}>
-        Registration Successful
-        </Text>
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        activeOpacity={0.5}
-        onPress={() => props.navigation.navigate('LoginScreen')}>
-        <Text style={styles.buttonTextStyle}>Login Now</Text>
-        </TouchableOpacity>
-    </View>
-    );
-}
+
     return (
         <View style={styles.mainBody}>
         <Loader loading={loading} />
@@ -201,7 +242,7 @@ if (isRegistraionSuccess) {
                         source={images.female}
                         style={{width:20,height:20,marginLeft:10,marginTop:-4}}
                     />)}
-                    <Text style ={{fontsize:13,color: colors.darkBlue,marginLeft:5,marginTop:-2}}>{genderOption}</Text>
+                    <Text style ={{color: colors.darkBlue,marginLeft:5,marginTop:-2}}>{genderOption}</Text>
                 </TouchableOpacity>
                 );
             })}
@@ -221,7 +262,7 @@ if (isRegistraionSuccess) {
             <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={{handleSubmitButton}}>
+                onPress={handleSubmitButton}>
                 {/* onPress={() => {{handleSubmitButton};navigation.navigate('LoginScreen')}}> */}
                 <Text style={styles.buttonTextStyle}>Login</Text>
             </TouchableOpacity>

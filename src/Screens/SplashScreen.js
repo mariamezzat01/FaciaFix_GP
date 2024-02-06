@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, View, StyleSheet, Image, Text} from 'react-native';
 import {images , colors} from '../assets/assets';
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({navigation}) => {
   //State for ActivityIndicator animation

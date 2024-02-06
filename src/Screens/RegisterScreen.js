@@ -16,6 +16,7 @@ import Loader from './Components/loader';
 import {images, colors} from '../assets/assets';
 import Input from '../assets/input';
 import emailValidator from 'email-validator';
+import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -24,12 +25,14 @@ const RegisterScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState(true);
+  const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [mobileNumber, setmobileNumber] = useState('');
   const [title, setTitle] = useState('');
-  const [isPasswordShown, setIsPasswordShown] = useState(true);
-  const [fillData, setFillData] = useState(false);
+  
+  // const [fillData, setFillData] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
+
   const [errors, setErrors] = useState({
     minValueValidation: false,
     numberValidation: false,
@@ -62,6 +65,7 @@ const RegisterScreen = ({navigation}) => {
   const mobileInputRef = createRef();
   const titleOptions = ['Patient', 'Doctor'];
 
+  // const navigation = useNavigation();
   const handleSubmitButton = () => {
     setErrortext('');
     if (!firstName) {
@@ -73,7 +77,10 @@ const RegisterScreen = ({navigation}) => {
       return;
     }
     if (!email) {
-      alert('Please fill you Email');
+      alert('Please fill Email');
+      return;
+    } else if (!emailValidator.validate(email)) {
+      alert('Please enter a valid email address');
       return;
     }
     if (!password) {
@@ -88,19 +95,11 @@ const RegisterScreen = ({navigation}) => {
       alert('Please select your title');
       return;
     }
-    if (!email) {
-      alert('Please fill Email');
-      return;
-    } else if (!emailValidator.validate(email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
     }
     validatePassword(password);
-
     if (
       !errors.minValueValidation ||
       !errors.numberValidation ||
@@ -120,9 +119,10 @@ const RegisterScreen = ({navigation}) => {
       alert('Mobile Number should start with 0');
       return;
     }
-    setFillData(true);
+    
     //Show Loader
     // setLoading(true);
+    // setFillData(true);
     // var dataToSend = {
     // firstName: firstName,
     // secondName: secondName,
@@ -181,291 +181,287 @@ const RegisterScreen = ({navigation}) => {
       <View style={styles.upperSection}>
         <Image source={images.upperImage} style={styles.roundedImage} />
       </View>
-      <View style={styles.lowerSection}>
-        <View
-          style={{
-            backgroundColor: colors.white,
-            borderTopRightRadius: 60,
-            height: 60,
-          }}></View>
-      </View>
       <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
           justifyContent: 'center',
           alignContent: 'center',
-        }}>
-        <KeyboardAvoidingView enabled>
-          <View style={styles.container}>
+          
+          }}>
+        <View style={styles.lowerSection}>
+          <View style={{borderTopRightRadius: 60, backgroundColor: colors.white,}}>
+          <KeyboardAvoidingView enabled>
             <Text style={styles.header}>Sign Up</Text>
-            <Text style={styles.label}>First Name</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.user} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={FirstName => setFirstName(FirstName)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your First Name"
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="sentences"
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  secondNameInputRef.current &&
-                  secondNameInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-            </View>
-            {/* <Input  
-                        label="First Name"
-                        imageSource={images.user}
-                        onChangeText={(FirstName) => setFirstName(FirstName)}
-                        placeholder="Enter your First Name"
-                        autoCapitalize="sentences"
-                        keyboardType="default"
-                        onSubmitEditing={() =>
-                            secondNameInputRef.current && secondNameInputRef.current.focus()
-                        }
-                        returnKeyType="next"
-                    /> */}
-            {/* <Input  
-                        label="Second Name"
-                        imageSource={images.user}
-                        onChangeText={(SecondName) => setSecondName(SecondName)}
-                        placeholder="Enter your First Name"
-                        autoCapitalize="sentences"
-                        keyboardType="default"
-                        ref={secondNameInputRef}
-                        onSubmitEditing={() =>
-                            emailInputRef.current && emailInputRef.current.focus()
-                        }
-                        returnKeyType="next"
-                    /> */}
-            <Text style={styles.label}>Second Name</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.user} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={SecondName => setSecondName(SecondName)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your Second Name"
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="sentences"
-                returnKeyType="next"
-                ref={secondNameInputRef}
-                onSubmitEditing={() =>
-                  emailInputRef.current && emailInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-            </View>
-            <Text style={styles.label}>Email</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.mailIcon} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={Email => setEmail(Email)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your Email"
-                placeholderTextColor="#8b9cb5"
-                keyboardType="email-address"
-                ref={emailInputRef}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  passwordInputRef.current && passwordInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-            </View>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.passwordIcon} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={handlePasswordChange}
-                onFocus={handlePasswordFocus}
-                onBlur={handlePasswordBlur}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your Password"
-                placeholderTextColor="#8b9cb5"
-                ref={passwordInputRef}
-                returnKeyType="next"
-                secureTextEntry={isPasswordShown}
-                onSubmitEditing={() =>
-                  confirmPasswordInputRef.current &&
-                  confirmPasswordInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-              <TouchableOpacity
-                onPress={() => setIsPasswordShown(!isPasswordShown)}
-                style={{
-                  position: 'absolute',
-                  right: 12,
-                }}>
-                {isPasswordShown == false ? (
-                  <Image source={images.eyeClosedIcon} style={styles.icon} />
-                ) : (
-                  <Image source={images.eyeOpenIcon} style={styles.icon} />
-                )}
-              </TouchableOpacity>
-            </View>
-            {isPasswordFocused && (
-              <View>
-                {Object.entries(errors).map(([key, value]) => (
-                  <View
-                    key={key}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: -9,
-                    }}>
-                    {value ? (
-                      <Image source={images.right} style={styles.icon} />
-                    ) : (
-                      <Image source={images.wrong} style={styles.icon} />
-                    )}
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: '400',
-                        color: value ? '#20D56F' : '#C82214',
-                        marginLeft: 8,
-                      }}>
-                      {key === 'minValueValidation' &&
-                        'Password must be at least 8 Characters'}
-                      {key === 'numberValidation' &&
-                        'Password must have at least one Number'}
-                      {key === 'capitalLetterValidation' &&
-                        'Password must have at least one Capital Letter'}
-                      {key === 'specialCharacterValidation' &&
-                        'Password must have at least one Special Character'}
-                    </Text>
-                  </View>
-                ))}
-              </View>
-            )}
-            <Text style={styles.label}>Confirm Password</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.passwordIcon} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={ConfirmPassword =>
-                  setConfirmPassword(ConfirmPassword)
-                }
-                underlineColorAndroid="#f000"
-                placeholder="Re-Enter your Password"
-                placeholderTextColor="#8b9cb5"
-                ref={confirmPasswordInputRef}
-                secureTextEntry={isPasswordShown}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                  mobileInputRef.current && mobileInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-              />
-              <TouchableOpacity
-                onPress={() => setIsPasswordShown(!isPasswordShown)}
-                style={{
-                  position: 'absolute',
-                  right: 12,
-                }}>
-                {isPasswordShown == false ? (
-                  <Image source={images.eyeClosedIcon} style={styles.icon} />
-                ) : (
-                  <Image source={images.eyeOpenIcon} style={styles.icon} />
-                )}
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.label}>Mobile Number</Text>
-            <View style={styles.inputBar}>
-              <Image source={images.mobile} style={styles.icon} />
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={mobileNumber => setmobileNumber(mobileNumber)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter Mobile Number"
-                keyboardType="numeric"
-                placeholderTextColor="#8b9cb5"
-                autoCapitalize="none"
-                ref={mobileInputRef}
-                returnKeyType="next"
-                onSubmitEditing={Keyboard.dismiss}
-                blurOnSubmit={false}
-              />
-            </View>
-            <Text style={styles.label}>Are you</Text>
-            <View style={styles.optionsContainer}>
-              {titleOptions.map(titleOption => {
-                return (
-                  <TouchableOpacity
-                    key={titleOption}
-                    style={styles.singleOptionContainer}
-                    onPress={() => setTitle(titleOption)}>
-                    <View style={styles.outerCircle}>
-                      {title === titleOption ? (
-                        <View style={styles.innerCircle} />
-                      ) : null}
-                    </View>
-                    {titleOption == 'Patient' ? (
-                      <Image
-                        source={images.patient}
-                        style={{
-                          width: 20,
-                          height: 20,
-                          marginLeft: 10,
-                          marginTop: -4,
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        source={images.doctor}
-                        style={{
-                          width: 20,
-                          height: 20,
-                          marginLeft: 10,
-                          marginTop: -4,
-                        }}
-                      />
-                    )}
-                    <Text
-                      style={{
-                        color: colors.darkBlue,
-                        marginLeft: 5,
-                        marginTop: -2,
-                      }}>
-                      {titleOption}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            {errortext != '' ? (
-              <Text style={styles.errorTextStyle}>{errortext}</Text>
-            ) : null}
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              // onPress={{handleSubmitButton}}>
-              onPress={() => {
-                handleSubmitButton();
-                if (fillData) {
-                  if (title === 'Doctor') {
-                    navigation.navigate('RegisterScreen2Doctors');
-                  } else if (title === 'Patient') {
-                    navigation.navigate('RegisterScreen2Patients');
+              <Text style={styles.label}>First Name</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.user} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={FirstName => setFirstName(FirstName)}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter your First Name"
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="sentences"
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    secondNameInputRef.current &&
+                    secondNameInputRef.current.focus()
                   }
-                }
-              }}>
-              <Text style={styles.buttonTextStyle}>Next</Text>
-            </TouchableOpacity>
-            <Text
-              style={styles.registerTextStyle}
-              onPress={() => navigation.navigate('LoginScreen')}>
-              Already have an account? <Text style={styles.a}>Login Here</Text>
-            </Text>
+                  blurOnSubmit={false}
+                />
+              </View>
+              {/* <Input  
+                          label="First Name"
+                          imageSource={images.user}
+                          onChangeText={(FirstName) => setFirstName(FirstName)}
+                          placeholder="Enter your First Name"
+                          autoCapitalize="sentences"
+                          keyboardType="default"
+                          onSubmitEditing={() =>
+                              secondNameInputRef.current && secondNameInputRef.current.focus()
+                          }
+                          returnKeyType="next"
+                      /> */}
+              {/* <Input  
+                          label="Second Name"
+                          imageSource={images.user}
+                          onChangeText={(SecondName) => setSecondName(SecondName)}
+                          placeholder="Enter your First Name"
+                          autoCapitalize="sentences"
+                          keyboardType="default"
+                          ref={secondNameInputRef}
+                          onSubmitEditing={() =>
+                              emailInputRef.current && emailInputRef.current.focus()
+                          }
+                          returnKeyType="next"
+                      /> */}
+              <Text style={styles.label}>Second Name</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.user} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={SecondName => setSecondName(SecondName)}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter your Second Name"
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="sentences"
+                  returnKeyType="next"
+                  ref={secondNameInputRef}
+                  onSubmitEditing={() =>
+                    emailInputRef.current && emailInputRef.current.focus()
+                  }
+                  blurOnSubmit={false}
+                />
+              </View>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.mailIcon} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={Email => setEmail(Email)}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter your Email"
+                  placeholderTextColor="#8b9cb5"
+                  keyboardType="email-address"
+                  ref={emailInputRef}
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    passwordInputRef.current && passwordInputRef.current.focus()
+                  }
+                  blurOnSubmit={false}
+                />
+              </View>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.passwordIcon} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={handlePasswordChange}
+                  onFocus={handlePasswordFocus}
+                  onBlur={handlePasswordBlur}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter your Password"
+                  placeholderTextColor="#8b9cb5"
+                  ref={passwordInputRef}
+                  returnKeyType="next"
+                  secureTextEntry={isPasswordShown}
+                  onSubmitEditing={() =>
+                    confirmPasswordInputRef.current &&
+                    confirmPasswordInputRef.current.focus()
+                  }
+                  blurOnSubmit={false}
+                />
+                <TouchableOpacity
+                  onPress={() => setIsPasswordShown(!isPasswordShown)}
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                  }}>
+                  {isPasswordShown == false ? (
+                    <Image source={images.eyeClosedIcon} style={styles.icon} />
+                  ) : (
+                    <Image source={images.eyeOpenIcon} style={styles.icon} />
+                  )}
+                </TouchableOpacity>
+              </View>
+              {isPasswordFocused && (
+                <View>
+                  {Object.entries(errors).map(([key, value]) => (
+                    <View
+                      key={key}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginVertical: -9,
+                      }}>
+                      {value ? (
+                        <Image source={images.right} style={styles.icon} />
+                      ) : (
+                        <Image source={images.wrong} style={styles.icon} />
+                      )}
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: '400',
+                          color: value ? '#20D56F' : '#C82214',
+                          marginLeft: 8,
+                        }}>
+                        {key === 'minValueValidation' &&
+                          'Password must be at least 8 Characters'}
+                        {key === 'numberValidation' &&
+                          'Password must have at least one Number'}
+                        {key === 'capitalLetterValidation' &&
+                          'Password must have at least one Capital Letter'}
+                        {key === 'specialCharacterValidation' &&
+                          'Password must have at least one Special Character'}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              )}
+              <Text style={styles.label}>Confirm Password</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.passwordIcon} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={ConfirmPassword =>
+                    setConfirmPassword(ConfirmPassword)
+                  }
+                  underlineColorAndroid="#f000"
+                  placeholder="Re-Enter your Password"
+                  placeholderTextColor="#8b9cb5"
+                  ref={confirmPasswordInputRef}
+                  secureTextEntry={isPasswordShown}
+                  returnKeyType="next"
+                  onSubmitEditing={() =>
+                    mobileInputRef.current && mobileInputRef.current.focus()
+                  }
+                  blurOnSubmit={false}
+                />
+                <TouchableOpacity
+                  onPress={() => setIsPasswordShown(!isPasswordShown)}
+                  style={{
+                    position: 'absolute',
+                    right: 12,
+                  }}>
+                  {isPasswordShown == false ? (
+                    <Image source={images.eyeClosedIcon} style={styles.icon} />
+                  ) : (
+                    <Image source={images.eyeOpenIcon} style={styles.icon} />
+                  )}
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.label}>Mobile Number</Text>
+              <View style={styles.inputBar}>
+                <Image source={images.mobile} style={styles.icon} />
+                <TextInput
+                  style={styles.inputStyle}
+                  onChangeText={mobileNumber => setmobileNumber(mobileNumber)}
+                  underlineColorAndroid="#f000"
+                  placeholder="Enter Mobile Number"
+                  keyboardType="numeric"
+                  placeholderTextColor="#8b9cb5"
+                  autoCapitalize="none"
+                  ref={mobileInputRef}
+                  returnKeyType="next"
+                  onSubmitEditing={Keyboard.dismiss}
+                  blurOnSubmit={false}
+                />
+              </View>
+              <Text style={styles.label}>Are you</Text>
+              <View style={styles.optionsContainer}>
+                {titleOptions.map(titleOption => {
+                  return (
+                    <TouchableOpacity
+                      key={titleOption}
+                      style={styles.singleOptionContainer}
+                      onPress={() => setTitle(titleOption)}>
+                      <View style={styles.outerCircle}>
+                        {title === titleOption ? (
+                          <View style={styles.innerCircle} />
+                        ) : null}
+                      </View>
+                      {titleOption == 'Patient' ? (
+                        <Image
+                          source={images.patient}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            marginLeft: 10,
+                            marginTop: -4,
+                          }}
+                        />
+                      ) : (
+                        <Image
+                          source={images.doctor}
+                          style={{
+                            width: 20,
+                            height: 20,
+                            marginLeft: 10,
+                            marginTop: -4,
+                          }}
+                        />
+                      )}
+                      <Text
+                        style={{
+                          color: colors.darkBlue,
+                          marginLeft: 5,
+                          marginTop: -2,
+                        }}>
+                        {titleOption}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}>{errortext}</Text>
+              ) : null}
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                // onPress={{handleSubmitButton}}>
+                onPress={() => {
+                  handleSubmitButton();
+                    if (title === 'Doctor') {
+                      // navigation.navigate('RegisterScreen2Doctors');
+                      navigation.navigate('RegisterScreen2Doctors', { firstName, secondName, email,password,mobileNumber,title });
+                    } else if (title === 'Patient') {
+                      // navigation.navigate('RegisterScreen2Patients');
+                      navigation.navigate('RegisterScreen2Patients', { firstName, secondName, email,password,mobileNumber,title });
+                    }
+                  
+                }}>
+                <Text style={styles.buttonTextStyle}>Next</Text>
+              </TouchableOpacity>
+              <Text
+                style={styles.registerTextStyle}
+                onPress={() => navigation.navigate('LoginScreen')}>
+                Already have an account? <Text style={styles.a}>Login Here</Text>
+              </Text>
+          </KeyboardAvoidingView>
           </View>
-        </KeyboardAvoidingView>
+      </View>
       </ScrollView>
     </View>
   );

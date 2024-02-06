@@ -8,8 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
-import {BoxShadow} from 'react-native-shadow';
+
 import {images, colors} from '../assets/assets';
 
 const DoctorItem = ({name, workingDays, navigation}) => (

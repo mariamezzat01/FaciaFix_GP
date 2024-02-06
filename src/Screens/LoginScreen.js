@@ -12,7 +12,12 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-community/async-storage';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { login } from '../store/api';
+
+import Parse from 'parse/react-native';
+import {useNavigation} from '@react-navigation/native';
+
 
 import Loader from './Components/loader';
 import {images, colors} from '../assets/assets';
@@ -20,6 +25,9 @@ import Input from '../assets/input';
 import emailValidator from 'email-validator';
 
 const LoginScreen = ({navigation}) => {
+
+  // const navigation = useNavigation();
+
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
   const [isPasswordShown, setIsPasswordShown] = useState(true);
@@ -27,18 +35,12 @@ const LoginScreen = ({navigation}) => {
   const [errortext, setErrortext] = useState('');
 
   const passwordInputRef = createRef();
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  // const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  // const dispatch = useDispatch();
+  // const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmitPress = () => {
     setErrortext('');
-    if (!userEmail) {
-      alert('Please fill Email');
-      return;
-    }
-    if (!userPassword) {
-      alert('Please fill Password');
-      return;
-    }
     if (!userEmail) {
       alert('Please fill Email');
       return;
@@ -50,19 +52,50 @@ const LoginScreen = ({navigation}) => {
     if (!userPassword) {
       alert('Please fill Password');
       return;
-    } else if (userPassword.length < 6) {
-      alert('Password must be at least 6 characters long');
+    } else if (userPassword.length < 8) {
+      alert('Password must be at least 8 characters long');
       return;
     }
+
+    // login({ userEmail, userPassword }, dispatch);
+  
     setLoading(true);
-    let dataToSend = {email: userEmail, password: userPassword};
-    let formBody = [];
-    for (let key in dataToSend) {
-      let encodedKey = encodeURIComponent(key);
-      let encodedValue = encodeURIComponent(dataToSend[key]);
-      formBody.push(encodedKey + '=' + encodedValue);
-    }
-    formBody = formBody.join('&');
+
+    const doUserLogIn = async function () {
+      // Note that this values come from state variables that we've declared before
+      const userEmailValue = userEmail;
+      const passwordValue = userPassword;
+      return await Parse.User.logIn(userEmailValue, passwordValue)
+        .then(async (loggedInUser) => {
+          // logIn returns the corresponding ParseUser object
+          Alert.alert(
+            'Success!',
+            `User ${loggedInUser.get('username')} has successfully signed in!`,
+          );
+          // To verify that this is in fact the current user, currentAsync can be used
+          const currentUser = await Parse.User.currentAsync();
+          console.log(loggedInUser === currentUser);
+          // Navigation.navigate takes the user to the screen named after the one
+          // passed as parameter
+          // navigation.navigate('Home');
+          navigation.replace('Patients');
+          return true;
+        })
+        .catch((error) => {
+          // Error can be caused by wrong parameters or lack of Internet connection
+          Alert.alert('Error!', error.message);
+          return false;
+        });
+    };
+
+    // let dataToSend = {email: userEmail, password: userPassword};
+    // let formBody = [];
+    // for (let key in dataToSend) {
+    //   let encodedKey = encodeURIComponent(key);
+    //   let encodedValue = encodeURIComponent(dataToSend[key]);
+    //   formBody.push(encodedKey + '=' + encodedValue);
+    // }
+    // formBody = formBody.join('&');
 
     // fetch('http://localhost:3000/api/user/login', {
     //   method: 'POST',
@@ -94,7 +127,7 @@ const LoginScreen = ({navigation}) => {
     //     console.error(error);
     //   });
     setLoading(false);
-    navigation.replace('DrawerNavigationRoutes');
+    // navigation.replace('DrawerNavigationRoutes');
   };
 
   return (
@@ -112,6 +145,7 @@ const LoginScreen = ({navigation}) => {
               <Input
                 label="Email Address"
                 imageSource={images.mailIcon}
+                // value={UserEmail}
                 onChangeText={UserEmail => setUserEmail(UserEmail)}
                 placeholder="Enter your email address"
                 keyboardType="email-address"
@@ -182,6 +216,7 @@ const LoginScreen = ({navigation}) => {
                 <Image source={images.passwordIcon} style={styles.icon} />
                 <TextInput
                   style={styles.inputStyle}
+                  // value={UserPassword}
                   onChangeText={UserPassword => setUserPassword(UserPassword)}
                   placeholder="Enter your Password" //12345
                   placeholderTextColor="#8b9cb5"
@@ -212,8 +247,8 @@ const LoginScreen = ({navigation}) => {
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                // onPress={handleSubmitPress}>
-                onPress={() => navigation.navigate('PatientsHomeScreen')}>
+                onPress={handleSubmitPress}>
+                {/* onPress={() => navigation.navigate('PatientsHomeScreen')}> */}
                 <Text style={styles.buttonTextStyle}>Login</Text>
               </TouchableOpacity>
               <Text
