@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import React, {useState, createRef} from 'react';
+import React, {useState, useEffect,createRef} from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -23,41 +23,32 @@ const RegisterScreen = ({navigation}) => {
   const [secondName, setSecondName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState(true);
-  const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [mobileNumber, setmobileNumber] = useState('');
   const [title, setTitle] = useState('');
-  
-  // const [fillData, setFillData] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
 
-  const [errors, setErrors] = useState({
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isPasswordShown, setIsPasswordShown] = useState(true);
+
+  const [passwordValidations, setPasswordValidations] = useState({
     minValueValidation: false,
     numberValidation: false,
     capitalLetterValidation: false,
     specialCharacterValidation: false,
   });
-  const handlePasswordChange = newPassword => {
-    setPassword(newPassword);
-    validatePassword(newPassword);
-  };
-  const validatePassword = password => {
-    setErrors({
-      minValueValidation: password.length >= 8,
-      numberValidation: /\d/.test(password),
-      capitalLetterValidation: /[A-Z]/.test(password),
-      specialCharacterValidation: /[^A-Za-z0-9]/.test(password),
-    });
-  };
-  const handlePasswordFocus = () => {
-    setIsPasswordFocused(true);
-  };
+  const [submitValidation, setSubmitValidation] = useState({
+    firstNameValidation: false,
+    secondNameValidation: false,
+    emailValidation: false,
+    passwordValidation: false,
+    confirmPasswordValidation: false,
+    mobileNumberValidation: false,
+    titleValidation: false,
+  });
 
-  const handlePasswordBlur = () => {
-    setIsPasswordFocused(false);
-  };
   const secondNameInputRef = createRef();
   const emailInputRef = createRef();
   const passwordInputRef = createRef();
@@ -65,8 +56,34 @@ const RegisterScreen = ({navigation}) => {
   const mobileInputRef = createRef();
   const titleOptions = ['Patient', 'Doctor'];
 
+  const handlePasswordChange = newPassword => {
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+  const validatePassword = newPassword => {
+    setPasswordValidations({
+      minValueValidation: newPassword.length >= 8,
+      numberValidation: /\d/.test(newPassword),
+      capitalLetterValidation: /[A-Z]/.test(newPassword),
+      specialCharacterValidation: /[^A-Za-z0-9]/.test(newPassword),
+    });
+  };
+
   // const navigation = useNavigation();
   const handleSubmitButton = () => {
+    // setSubmitValidation({
+    //   firstNameValidation: firstName,
+    //   secondNameValidation: secondName,
+    //   emailValidation: email,
+    //   passwordValidation: password,
+    //   confirmPasswordValidation: confirmPassword,
+    //   mobileNumberValidation: mobileNumber,
+    //   titleValidation: title,
+
+    // });
+    // if (submitValidation){
+      
+    // }
     setErrortext('');
     if (!firstName) {
       alert('Please fill your First Name');
@@ -101,10 +118,10 @@ const RegisterScreen = ({navigation}) => {
     }
     validatePassword(password);
     if (
-      !errors.minValueValidation ||
-      !errors.numberValidation ||
-      !errors.capitalLetterValidation ||
-      !errors.specialCharacterValidation
+      !passwordValidations.minValueValidation ||
+      !passwordValidations.numberValidation ||
+      !passwordValidations.capitalLetterValidation ||
+      !passwordValidations.specialCharacterValidation
     ) {
       alert('Password is not valid. Please check the requirements.');
       return;
@@ -119,61 +136,6 @@ const RegisterScreen = ({navigation}) => {
       alert('Mobile Number should start with 0');
       return;
     }
-    
-    //Show Loader
-    // setLoading(true);
-    // setFillData(true);
-    // var dataToSend = {
-    // firstName: firstName,
-    // secondName: secondName,
-    // email: email,
-    // mobileNumber: mobileNumber,
-    // password: password,
-    // gender:gender,
-    // title:title,
-    // };
-    // var formBody = [];
-    // for (var key in dataToSend) {
-    // var encodedKey = encodeURIComponent(key);
-    // var encodedValue = encodeURIComponent(dataToSend[key]);
-    // formBody.push(encodedKey + '=' + encodedValue);
-    // }
-    // formBody = formBody.join('&');
-
-    // fetch('http://localhost:3000/api/user/register', {
-    //   method: 'POST',
-    //   body: formBody,
-    //   headers: {
-    //     //Header Defination
-    //     'Content-Type':
-    //     'application/x-www-form-urlencoded;charset=UTF-8',
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.log(responseJson);
-    //     // If server response message same as Data Matched
-    //     if (responseJson.status === 'success') {
-    //       setIsRegistraionSuccess(true);
-    //       console.log(
-    //         'Registration Successful. Please Login to proceed'
-    //       );
-    //     } else {
-    //       setErrortext(responseJson.msg);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     //Hide Loader
-    //     setLoading(false);
-    //     console.error(error);
-    //   });
-    // setLoading(false);
-    // setIsRegistraionSuccess(true);
-    // console.log(
-    //     'Registration Successful. Please Login to proceed'
-    //     );
   };
   return (
     <View style={styles.mainBody}>
@@ -277,8 +239,8 @@ const RegisterScreen = ({navigation}) => {
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={handlePasswordChange}
-                  onFocus={handlePasswordFocus}
-                  onBlur={handlePasswordBlur}
+                  onFocus={setIsPasswordFocused(true)}
+                  onBlur={setIsPasswordFocused(true)}
                   underlineColorAndroid="#f000"
                   placeholder="Enter your Password"
                   placeholderTextColor="#8b9cb5"

@@ -1,27 +1,15 @@
-// // store.js
-// import { configureStore } from '@reduxjs/toolkit';
-// import thunk from 'redux-thunk';
-// import authReducer from './authSlice';
-
-// const store = configureStore({
-//   reducer: {
-//     auth: authReducer,
-//   },
-//   middleware: [thunk],
-// });
-
-// export default store;
-
-// store.js
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
-import authReducer from './authSlice';
+import patientSlice from'./slices/patient';
+import docSlice from './slices/doctor';
 
 const store = configureStore({
   reducer: {
-    auth: authReducer,
+    patient: patientSlice,
+    doctor: docSlice,
   },
   middleware: [...getDefaultMiddleware(), thunk],
+  // middleware: [thunk],
 });
 
 export default store;

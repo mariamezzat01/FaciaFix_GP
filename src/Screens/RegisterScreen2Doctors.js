@@ -1,4 +1,4 @@
-import React, {useState, createRef} from 'react';
+import React, {useState, useEffect,createRef} from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -15,11 +15,18 @@ import Loader from './Components/loader';
 import {images , colors} from '../assets/assets';
 import Input from '../assets/input';
 
+import Axios from '../Network/axios';
+import {useSelector, useDispatch} from 'react-redux';
+import  {setCurrentDoctor}  from '../store/slices/doctor';
+import  {setCurrentPatient}  from '../store/slices/patient';
+
 const RegisterScreen2Doctors = ({navigation}) => {
     const [gender, setGender] = useState('');
     const [age, setAge] = useState('');
+
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
+
     const [
         isRegistraionSuccess,
         setIsRegistraionSuccess
@@ -28,7 +35,9 @@ const RegisterScreen2Doctors = ({navigation}) => {
     const ageInputRef = createRef();
     const genderOptions = ['Male', 'Female'];
 
-    const handleSubmitButton = () => {
+    const dispatch = useDispatch();
+
+    const handleSubmitButton = async() => {
         setErrortext('');
         if (!age) {
         alert('Please fill Age');
@@ -41,17 +50,40 @@ const RegisterScreen2Doctors = ({navigation}) => {
 
         //Show Loader
         setLoading(true);
-        var dataToSend = {
-            age: age,
-            gender:gender,
-            };
-            var formBody = [];
-            for (var key in dataToSend) {
-            var encodedKey = encodeURIComponent(key);
-            var encodedValue = encodeURIComponent(dataToSend[key]);
-            formBody.push(encodedKey + '=' + encodedValue);
-            }
-            formBody = formBody.join('&');
+        const response = await Axios.post('/auth/register/', {
+            firstName, 
+            secondName, 
+            email,
+            password,
+            mobileNumber,
+            title,
+            age,
+            gender,
+        });
+         if (response.status === 200 || response.status === 201) {
+      dispatch(setCurrentDoctor(response.data.account));
+        setDisable(false);
+      setLoading(false);
+      navigation.navigate('PatientsHomeScreen');
+    } else {
+      setError(response.data.message);
+      setDisable(false);
+      setLoading(false);
+      console.log('error', error);
+    }
+    console.log('response', response);
+  
+        // var dataToSend = {
+        //     age: age,
+        //     gender:gender,
+        //     };
+        //     var formBody = [];
+        //     for (var key in dataToSend) {
+        //     var encodedKey = encodeURIComponent(key);
+        //     var encodedValue = encodeURIComponent(dataToSend[key]);
+        //     formBody.push(encodedKey + '=' + encodedValue);
+        //     }
+        //     formBody = formBody.join('&');
     
             // fetch('http://localhost:3000/api/user/register', {
             //   method: 'POST',
