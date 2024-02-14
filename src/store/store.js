@@ -1,14 +1,16 @@
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import thunk from 'redux-thunk';
 import patientSlice from'./slices/patient';
-import docSlice from './slices/doctor';
+import doctorSlice from './slices/doctor';
+import tokenSlice from './slices/token';
 
 const store = configureStore({
   reducer: {
     patient: patientSlice,
-    doctor: docSlice,
+    // doctor: doctorSlice,
+    token : tokenSlice,
   },
-  middleware: [...getDefaultMiddleware(), thunk],
+  // middleware: [...getDefaultMiddleware(), thunk],
   // middleware: [thunk],
 });
 

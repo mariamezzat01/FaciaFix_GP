@@ -15,14 +15,18 @@ import {
 // import { useDispatch, useSelector } from 'react-redux';
 // import { login } from '../store/api';
 
-import Parse from 'parse/react-native';
-import {useNavigation} from '@react-navigation/native';
-
+// import Parse from 'parse/react-native';
+// import {useNavigation} from '@react-navigation/native';
 
 import Loader from './Components/loader';
 import {images, colors} from '../assets/assets';
 import Input from '../assets/input';
 import emailValidator from 'email-validator';
+
+import Axios from '../Network/axios';
+import {setCurrentPatient} from '../store/slices/patient';
+import {setToken} from '../store/slices/token';
+import {useSelector, useDispatch} from 'react-redux';
 
 const LoginScreen = ({navigation}) => {
 
@@ -35,11 +39,14 @@ const LoginScreen = ({navigation}) => {
   const [errortext, setErrortext] = useState('');
 
   const passwordInputRef = createRef();
-  // const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+
+  const patient = useSelector(state => state.patient);
+  const dispatch = useDispatch();
+  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
   // const dispatch = useDispatch();
   // const { loading, error } = useSelector((state) => state.auth);
 
-  const handleSubmitPress = () => {
+  const handleSubmitPress = async () => {
     setErrortext('');
     if (!userEmail) {
       alert('Please fill Email');
@@ -57,36 +64,65 @@ const LoginScreen = ({navigation}) => {
       return;
     }
 
-    // login({ userEmail, userPassword }, dispatch);
-  
-    setLoading(true);
+    const formData = new FormData();
+formData.append('userEmail', userEmail);
+formData.append('userPassword', userPassword);
 
-    const doUserLogIn = async function () {
-      // Note that this values come from state variables that we've declared before
-      const userEmailValue = userEmail;
-      const passwordValue = userPassword;
-      return await Parse.User.logIn(userEmailValue, passwordValue)
-        .then(async (loggedInUser) => {
-          // logIn returns the corresponding ParseUser object
-          Alert.alert(
-            'Success!',
-            `User ${loggedInUser.get('username')} has successfully signed in!`,
-          );
-          // To verify that this is in fact the current user, currentAsync can be used
-          const currentUser = await Parse.User.currentAsync();
-          console.log(loggedInUser === currentUser);
-          // Navigation.navigate takes the user to the screen named after the one
-          // passed as parameter
-          // navigation.navigate('Home');
-          navigation.replace('Patients');
-          return true;
-        })
-        .catch((error) => {
-          // Error can be caused by wrong parameters or lack of Internet connection
-          Alert.alert('Error!', error.message);
-          return false;
-        });
-    };
+
+  
+    setIsRegistraionSuccess(true);
+      setLoading(true);
+      const response = await Axios.post('/dj-rest-auth/login/', {email: userEmail,
+        password: userPassword});
+      // const response = await Axios.post('/dj-rest-auth/login/', formData);
+      if ( response.status === 200) {
+        dispatch(setDefaultUser(response.data));
+        dispatch(setToken(response.data.token));
+        // Axios.defaults.headers.common[
+        //   'Authorization'
+        // ] = `Token ${response.data.token}`;
+        navigation.navigate('PatientsHomeScreen');
+        setIsRegistraionSuccess(false);
+        setLoading(false);
+        setUserEmail('');
+        setUserPassword('');
+      } else {
+        console.log(response);
+        console.log(errortext)
+        setErrortext(response.data.errortext);
+        setIsRegistraionSuccess(false);
+        setLoading(false);
+      }
+      console.log(response);
+      // console.log("token" , response.data.token);
+    
+
+    // const doUserLogIn = async function () {
+    //   // Note that this values come from state variables that we've declared before
+    //   const userEmailValue = userEmail;
+    //   const passwordValue = userPassword;
+    //   return await Parse.User.logIn(userEmailValue, passwordValue)
+    //     .then(async (loggedInUser) => {
+    //       // logIn returns the corresponding ParseUser object
+    //       Alert.alert(
+    //         'Success!',
+    //         `User ${loggedInUser.get('username')} has successfully signed in!`,
+    //       );
+    //       // To verify that this is in fact the current user, currentAsync can be used
+    //       const currentUser = await Parse.User.currentAsync();
+    //       console.log(loggedInUser === currentUser);
+    //       // Navigation.navigate takes the user to the screen named after the one
+    //       // passed as parameter
+    //       // navigation.navigate('Home');
+    //       navigation.replace('Patients');
+    //       return true;
+    //     })
+    //     .catch((error) => {
+    //       // Error can be caused by wrong parameters or lack of Internet connection
+    //       Alert.alert('Error!', error.message);
+    //       return false;
+    //     });
+    // };
 
     // let dataToSend = {email: userEmail, password: userPassword};
     // let formBody = [];
@@ -126,7 +162,7 @@ const LoginScreen = ({navigation}) => {
     //     setLoading(false);
     //     console.error(error);
     //   });
-    setLoading(false);
+    // setLoading(false);
     // navigation.replace('DrawerNavigationRoutes');
   };
 
@@ -145,8 +181,8 @@ const LoginScreen = ({navigation}) => {
               <Input
                 label="Email Address"
                 imageSource={images.mailIcon}
-                // value={UserEmail}
-                onChangeText={UserEmail => setUserEmail(UserEmail)}
+                value={userEmail}
+                onChangeText={email => setUserEmail(email)}
                 placeholder="Enter your email address"
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -216,8 +252,8 @@ const LoginScreen = ({navigation}) => {
                 <Image source={images.passwordIcon} style={styles.icon} />
                 <TextInput
                   style={styles.inputStyle}
-                  // value={UserPassword}
-                  onChangeText={UserPassword => setUserPassword(UserPassword)}
+                  value={userPassword}
+                  onChangeText={password => setUserPassword(password)}
                   placeholder="Enter your Password" //12345
                   placeholderTextColor="#8b9cb5"
                   keyboardType="default"

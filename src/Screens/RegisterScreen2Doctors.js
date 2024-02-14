@@ -18,7 +18,7 @@ import Input from '../assets/input';
 import Axios from '../Network/axios';
 import {useSelector, useDispatch} from 'react-redux';
 import  {setCurrentDoctor}  from '../store/slices/doctor';
-import  {setCurrentPatient}  from '../store/slices/patient';
+import  {setToken}  from '../store/slices/token';
 
 const RegisterScreen2Doctors = ({navigation}) => {
     const [gender, setGender] = useState('');
@@ -50,29 +50,33 @@ const RegisterScreen2Doctors = ({navigation}) => {
 
         //Show Loader
         setLoading(true);
-        const response = await Axios.post('/auth/register/', {
+        const response = await Axios.post('/dj-rest-auth/registration/', {
             firstName, 
             secondName, 
             email,
-            password,
+            password1,
+            password2,
             mobileNumber,
             title,
             age,
             gender,
         });
-         if (response.status === 200 || response.status === 201) {
-      dispatch(setCurrentDoctor(response.data.account));
-        setDisable(false);
-      setLoading(false);
-      navigation.navigate('PatientsHomeScreen');
+        if (response.status === 200 || response.status === 201) {
+        dispatch(setCurrentDoctor(response.data.account));
+        dispatch(setToken(response.data.token));
+        Axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
+        // setDisable(false);
+        setIsRegistraionSuccess(true);
+        setLoading(false);
+        navigation.navigate('PatientsHomeScreen');
     } else {
-      setError(response.data.message);
-      setDisable(false);
-      setLoading(false);
-      console.log('error', error);
+        setError(response.data.message);
+        // setDisable(false);
+        setIsRegistraionSuccess(true);
+        setLoading(false);
+        console.log('error', error);
     }
     console.log('response', response);
-  
         // var dataToSend = {
         //     age: age,
         //     gender:gender,
@@ -114,11 +118,11 @@ const RegisterScreen2Doctors = ({navigation}) => {
             //     setLoading(false);
             //     console.error(error);
             //   });
-            setLoading(false);
+            // setLoading(false);
             setIsRegistraionSuccess(true);
-            console.log(
-                'Registration Successful. Please Login to proceed'
-                );
+            // console.log(
+            //     'Registration Successful. Please Login to proceed'
+            //     );
 };
 if (isRegistraionSuccess) {
     return (
@@ -182,10 +186,6 @@ if (isRegistraionSuccess) {
                 keyboardType="numeric"
                 ref={ageInputRef}
                 returnKeyType="next"
-                onSubmitEditing={() =>
-                    mobileInputRef.current &&
-                    mobileInputRef.current.focus()
-                }
                 blurOnSubmit={false}
                 />
             </View>
@@ -226,7 +226,7 @@ if (isRegistraionSuccess) {
             <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={{handleSubmitButton}}>
+                onPress={handleSubmitButton}>
                 {/* onPress={() => {{handleSubmitButton};navigation.navigate('LoginScreen')}}> */}
                 <Text style={styles.buttonTextStyle}>Login</Text>
             </TouchableOpacity>
