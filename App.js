@@ -15,8 +15,8 @@ import RegisterScreen2Patients from './src/Screens/RegisterScreen2Patients';
 import PatientsHomeScreen from './src/Screens/PatientsHomeScreen';
 import PatientsEditProfile from './src/Screens/PatientsEditProfile';
 import DoctorListScreen from './src/Screens/doctorListScreen';
-// import { Provider } from 'react-redux';
-// import store from './src/store/store';
+import { Provider } from 'react-redux';
+import store from './src/store/store';
 
 // Parse.setAsyncStorage(AsyncStorage);
 
@@ -30,21 +30,6 @@ import DoctorListScreen from './src/Screens/doctorListScreen';
 const Stack = createStackNavigator();
 
 const Auth = () => {
-  // Initialize Parse and AsyncStorage
-  // useEffect(() => {
-  //   const initializeParse = async () => {
-  //     const PARSE_APPLICATION_ID = 'YOUR_PARSE_APPLICATION_ID';
-  //     const PARSE_HOST_URL = 'https://parseapi.back4app.com/';
-  //     const PARSE_JAVASCRIPT_KEY = 'YOUR_PARSE_JAVASCRIPT_KEY';
-
-  //     Parse.setAsyncStorage(AsyncStorage);
-  //     Parse.initialize(PARSE_APPLICATION_ID, PARSE_JAVASCRIPT_KEY);
-  //     Parse.serverURL = PARSE_HOST_URL;
-  //   };
-
-  //   initializeParse();
-  // }, []);
-  // Stack Navigator for Login and Sign up Screen
   return (
     <Stack.Navigator initialRouteName="LoginScreen">
       <Stack.Screen
@@ -135,7 +120,7 @@ const Patients = () => {
 
 const App = () => {
   return (
-    // <Provider store={store}>
+    <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="SplashScreen">
           {/* SplashScreen which will come once for 5 Seconds */}
@@ -160,7 +145,7 @@ const App = () => {
           />
         </Stack.Navigator>
       </NavigationContainer>
-    // </Provider>
+    </Provider>
   );
 };
 

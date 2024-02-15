@@ -22,8 +22,8 @@ const RegisterScreen = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [secondName, setSecondName] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(true);
+  const [password1, setPassword1] = useState('');
+  const [password2, setPassword2] = useState(true);
   const [mobileNumber, setmobileNumber] = useState('');
   const [title, setTitle] = useState('');
 
@@ -57,7 +57,7 @@ const RegisterScreen = ({navigation}) => {
   const titleOptions = ['Patient', 'Doctor'];
 
   const handlePasswordChange = newPassword => {
-    setPassword(newPassword);
+    setPassword1(newPassword);
     validatePassword(newPassword);
   };
   const validatePassword = newPassword => {
@@ -100,11 +100,11 @@ const RegisterScreen = ({navigation}) => {
       alert('Please enter a valid email address');
       return;
     }
-    if (!password) {
+    if (!password1) {
       alert('Please fill your Password');
       return;
     }
-    if (!confirmPassword) {
+    if (!password2) {
       alert('Please confirm your Password');
       return;
     }
@@ -112,11 +112,11 @@ const RegisterScreen = ({navigation}) => {
       alert('Please select your title');
       return;
     }
-    if (password !== confirmPassword) {
+    if (password1 !== password2) {
       alert('Passwords do not match');
       return;
     }
-    validatePassword(password);
+    validatePassword(password1);
     if (
       !passwordValidations.minValueValidation ||
       !passwordValidations.numberValidation ||
@@ -239,8 +239,8 @@ const RegisterScreen = ({navigation}) => {
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={handlePasswordChange}
-                  onFocus={setIsPasswordFocused(true)}
-                  onBlur={setIsPasswordFocused(true)}
+                  onFocus={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(true)}
                   underlineColorAndroid="#f000"
                   placeholder="Enter your Password"
                   placeholderTextColor="#8b9cb5"
@@ -268,7 +268,7 @@ const RegisterScreen = ({navigation}) => {
               </View>
               {isPasswordFocused && (
                 <View>
-                  {Object.entries(errors).map(([key, value]) => (
+                  {Object.entries(passwordValidations).map(([key, value]) => (
                     <View
                       key={key}
                       style={{
@@ -306,8 +306,8 @@ const RegisterScreen = ({navigation}) => {
                 <Image source={images.passwordIcon} style={styles.icon} />
                 <TextInput
                   style={styles.inputStyle}
-                  onChangeText={ConfirmPassword =>
-                    setConfirmPassword(ConfirmPassword)
+                  onChangeText={password2 =>
+                    setPassword2(password2)
                   }
                   underlineColorAndroid="#f000"
                   placeholder="Re-Enter your Password"
@@ -407,10 +407,10 @@ const RegisterScreen = ({navigation}) => {
                   handleSubmitButton();
                     if (title === 'Doctor') {
                       // navigation.navigate('RegisterScreen2Doctors');
-                      navigation.navigate('RegisterScreen2Doctors', { firstName, secondName, email,password,mobileNumber,title });
+                      navigation.navigate('RegisterScreen2Doctors', { firstName, secondName, email,password1,password2, mobileNumber,title });
                     } else if (title === 'Patient') {
                       // navigation.navigate('RegisterScreen2Patients');
-                      navigation.navigate('RegisterScreen2Patients', { firstName, secondName, email,password,mobileNumber,title });
+                      navigation.navigate('RegisterScreen2Patients', { firstName, secondName, email,password1,password2,mobileNumber,title });
                     }
                   
                 }}>
