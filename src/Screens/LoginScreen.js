@@ -41,19 +41,10 @@ const LoginScreen = ({navigation}) => {
   const [errortext, setErrortext] = useState('');
 
   const passwordInputRef = createRef();
-<<<<<<< Updated upstream
 
   const patient = useSelector(state => state.patient);
   const dispatch = useDispatch();
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
-  // const dispatch = useDispatch();
-  // const { loading, error } = useSelector((state) => state.auth);
-=======
-
-  const patient = useSelector(state => state.patient);
-  const dispatch = useDispatch();
-  const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
->>>>>>> Stashed changes
 
   const handleSubmitPress = async () => {
     setErrortext('');
