@@ -12,17 +12,13 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-<<<<<<< Updated upstream
 // import { useDispatch, useSelector } from 'react-redux';
 // import { login } from '../store/api';
 
 // import Parse from 'parse/react-native';
 // import {useNavigation} from '@react-navigation/native';
 
-import Loader from './Components/loader';
-=======
 import Loader from '../Components/loader';
->>>>>>> Stashed changes
 import {images, colors} from '../assets/assets';
 import Input from '../assets/input';
 import emailValidator from 'email-validator';
@@ -33,6 +29,8 @@ import {setToken} from '../store/slices/token';
 import {useSelector, useDispatch} from 'react-redux';
 
 const LoginScreen = ({navigation}) => {
+
+  // const navigation = useNavigation();
 
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
@@ -45,6 +43,8 @@ const LoginScreen = ({navigation}) => {
   const patient = useSelector(state => state.patient);
   const dispatch = useDispatch();
   const [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
+  // const dispatch = useDispatch();
+  // const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmitPress = async () => {
     setErrortext('');
@@ -164,32 +164,6 @@ formData.append('userPassword', userPassword);
     //   });
     // setLoading(false);
     // navigation.replace('DrawerNavigationRoutes');
-=======
-    setIsRegistraionSuccess(true);
-      setLoading(true);
-      const response = await Axios.post('/dj-rest-auth/login/', {email: userEmail,
-        password: userPassword});
-      // const response = await Axios.post('/dj-rest-auth/login/', formData);
-      if ( response.status === 200) {
-        dispatch(setDefaultUser(response.data));
-        dispatch(setToken(response.data.token));
-        // Axios.defaults.headers.common[
-        //   'Authorization'
-        // ] = `Token ${response.data.token}`;
-        navigation.navigate('PatientsHomeScreen');
-        setIsRegistraionSuccess(false);
-        setLoading(false);
-        setUserEmail('');
-        setUserPassword('');
-      } else {
-        console.log(response);
-        console.log(errortext)
-        setErrortext(response.data.errortext);
-        setIsRegistraionSuccess(false);
-        setLoading(false);
-      }
-      console.log(response);
->>>>>>> Stashed changes
   };
 
   return (
