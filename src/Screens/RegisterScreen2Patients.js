@@ -11,7 +11,7 @@ import {
     ScrollView,
 } from 'react-native';
 // import ImagePicker from 'react-native-image-picker';
-import Loader from './Components/loader';
+import Loader from '../Components/loader';
 import {images , colors} from '../assets/assets';
 import Input from '../assets/input';
 
