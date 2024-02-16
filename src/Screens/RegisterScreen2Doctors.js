@@ -19,13 +19,17 @@ import Axios from '../Network/axios';
 import {useSelector, useDispatch} from 'react-redux';
 import  {setCurrentDoctor}  from '../store/slices/doctor';
 import  {setToken}  from '../store/slices/token';
+import { useNavigation } from '@react-navigation/native';
 
-const RegisterScreen2Doctors = ({navigation}) => {
+const RegisterScreen2Doctors = ({route}) => {
+     const navigation = useNavigation();
     const [gender, setGender] = useState('');
     const [age, setAge] = useState('');
 
     const [loading, setLoading] = useState(false);
     const [errortext, setErrortext] = useState('');
+
+    const { first_name, last_name, email,password1,password2,mobileNumber,title } = route.params;
 
     const [
         isRegistraionSuccess,
@@ -47,108 +51,64 @@ const RegisterScreen2Doctors = ({navigation}) => {
             alert('Please select your Gender');
             return;
         }
+        console.log('Registering:', { first_name, last_name, email,password1,password2,mobileNumber,title,  age,
+            gender });
 
         //Show Loader
         setLoading(true);
         const response = await Axios.post('/dj-rest-auth/registration/', {
-            firstName, 
-            secondName, 
+            first_name, 
+            last_name, 
             email,
             password1,
             password2,
             mobileNumber,
             title,
             age,
-            gender,
+            gender
         });
+        console.log('response:',response);
+        console.log('account:',response.data);
         if (response.status === 200 || response.status === 201) {
-        dispatch(setCurrentDoctor(response.data.account));
+        dispatch(setCurrentDoctor(response.data));
         dispatch(setToken(response.data.token));
         Axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
-        // setDisable(false);
         setIsRegistraionSuccess(true);
         setLoading(false);
         navigation.navigate('PatientsHomeScreen');
-    } else {
-        setError(response.data.message);
-        // setDisable(false);
-        setIsRegistraionSuccess(true);
-        setLoading(false);
-        console.log('error', error);
-    }
-    console.log('response', response);
-        // var dataToSend = {
-        //     age: age,
-        //     gender:gender,
-        //     };
-        //     var formBody = [];
-        //     for (var key in dataToSend) {
-        //     var encodedKey = encodeURIComponent(key);
-        //     var encodedValue = encodeURIComponent(dataToSend[key]);
-        //     formBody.push(encodedKey + '=' + encodedValue);
-        //     }
-        //     formBody = formBody.join('&');
-    
-            // fetch('http://localhost:3000/api/user/register', {
-            //   method: 'POST',
-            //   body: formBody,
-            //   headers: {
-            //     //Header Defination
-            //     'Content-Type':
-            //     'application/x-www-form-urlencoded;charset=UTF-8',
-            //   },
-            // })
-            //   .then((response) => response.json())
-            //   .then((responseJson) => {
-            //     //Hide Loader
-            //     setLoading(false);
-            //     console.log(responseJson);
-            //     // If server response message same as Data Matched
-            //     if (responseJson.status === 'success') {
-            //       setIsRegistraionSuccess(true);
-            //       console.log(
-            //         'Registration Successful. Please Login to proceed'
-            //       );
-            //     } else {
-            //       setErrortext(responseJson.msg);
-            //     }
-            //   })
-            //   .catch((error) => {
-            //     //Hide Loader
-            //     setLoading(false);
-            //     console.error(error);
-            //   });
-            // setLoading(false);
-            setIsRegistraionSuccess(true);
-            // console.log(
-            //     'Registration Successful. Please Login to proceed'
-            //     );
+        } else {
+            setError(response.data.message);
+            setIsRegistraionSuccess(false);
+            setLoading(false);
+            console.log('error', error);
+        }
+    setLoading(false);
 };
 if (isRegistraionSuccess) {
     return (
     <View
         style={{
         flex: 1,
-        backgroundColor: '#307ecc',
+        backgroundColor: colors.darkBlue,
         justifyContent: 'center',
         }}>
-        {/* <Image
-        // source={require('../../Image/success.png')}
+        
+        <Image
+        source={images.check}
         style={{
             height: 150,
-            resizeMode: 'contain',
+            width:150,
             alignSelf: 'center'
         }}
-        /> */}
+        />
         <Text style={styles.successTextStyle}>
         Registration Successful
         </Text>
-        <TouchableOpacity
-        style={styles.buttonStyle}
-        activeOpacity={0.5}
-        onPress={() => props.navigation.navigate('LoginScreen')}>
-        <Text style={styles.buttonTextStyle}>Login Now</Text>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={() => navigation.navigate('LoginScreen')}>
+                <Text style={styles.buttonTextStyle}>Login Now</Text>
+            </TouchableOpacity>
     </View>
     );
 }
@@ -213,7 +173,7 @@ if (isRegistraionSuccess) {
                         source={images.female}
                         style={{width:20,height:20,marginLeft:10,marginTop:-4}}
                     />)}
-                    <Text style ={{fontsize:13,color: colors.darkBlue,marginLeft:5,marginTop:-2}}>{genderOption}</Text>
+                    <Text style ={{color: colors.darkBlue,marginLeft:5,marginTop:-2}}>{genderOption}</Text>
                 </TouchableOpacity>
                 );
             })}
@@ -334,8 +294,10 @@ const styles = StyleSheet.create({
     successTextStyle: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 18,
-        padding: 30,
+        fontSize: 20,
+        marginTop:10,
+        marginBottom:60,
+        // padding: 30,
     },
     optionsContainer:{
         flexDirection: 'row',

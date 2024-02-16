@@ -25,6 +25,7 @@ export const images = {
     home:require("./images/home.png"),
     profileGreen:require("./images/profileGreen.png"),
     profileBlue:require("./images/profileBlue.png"),
+    check:require("./images/check.png"),
 };
 
 export const colors = {

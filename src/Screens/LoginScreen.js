@@ -32,8 +32,8 @@ const LoginScreen = ({navigation}) => {
 
   // const navigation = useNavigation();
 
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
+  const [email, setUserEmail] = useState('');
+  const [password, setUserPassword] = useState('');
   const [isPasswordShown, setIsPasswordShown] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
@@ -48,39 +48,41 @@ const LoginScreen = ({navigation}) => {
 
   const handleSubmitPress = async () => {
     setErrortext('');
-    if (!userEmail) {
+    if (!email) {
       alert('Please fill Email');
       return;
-    } else if (!emailValidator.validate(userEmail)) {
+    } else if (!emailValidator.validate(email)) {
       alert('Please enter a valid email address');
       return;
     }
     // Password validation
-    if (!userPassword) {
+    if (!password) {
       alert('Please fill Password');
       return;
-    } else if (userPassword.length < 8) {
+    } else if (password.length < 8) {
       alert('Password must be at least 8 characters long');
       return;
     }
 
     const formData = new FormData();
-formData.append('userEmail', userEmail);
-formData.append('userPassword', userPassword);
+formData.append('userEmail', email);
+formData.append('userPassword', password);
 
-
+const csrfToken = await fetchCsrfToken();
   
     setIsRegistraionSuccess(true);
       setLoading(true);
-      const response = await Axios.post('/dj-rest-auth/login/', {email: userEmail,
-        password: userPassword});
+      const response = await Axios.post('/dj-rest-auth/login/', { email, password}, {
+        headers: {
+          'X-CSRFToken': csrfToken,
+        },
+      });
+      console.log('response:',response);
       // const response = await Axios.post('/dj-rest-auth/login/', formData);
       if ( response.status === 200) {
-        dispatch(setDefaultUser(response.data));
+        dispatch(setCurrentDoctor(response.data));
         dispatch(setToken(response.data.token));
-        // Axios.defaults.headers.common[
-        //   'Authorization'
-        // ] = `Token ${response.data.token}`;
+        Axios.defaults.headers.common['Authorization'] = `Token ${response.data.token}`;
         navigation.navigate('PatientsHomeScreen');
         setIsRegistraionSuccess(false);
         setLoading(false);
@@ -181,7 +183,7 @@ formData.append('userPassword', userPassword);
               <Input
                 label="Email Address"
                 imageSource={images.mailIcon}
-                value={userEmail}
+                value={email}
                 onChangeText={email => setUserEmail(email)}
                 placeholder="Enter your email address"
                 keyboardType="email-address"
@@ -252,7 +254,7 @@ formData.append('userPassword', userPassword);
                 <Image source={images.passwordIcon} style={styles.icon} />
                 <TextInput
                   style={styles.inputStyle}
-                  value={userPassword}
+                  value={password}
                   onChangeText={password => setUserPassword(password)}
                   placeholder="Enter your Password" //12345
                   placeholderTextColor="#8b9cb5"

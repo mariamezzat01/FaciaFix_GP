@@ -19,8 +19,8 @@ import emailValidator from 'email-validator';
 import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = ({navigation}) => {
-  const [firstName, setFirstName] = useState('');
-  const [secondName, setSecondName] = useState('');
+  const [first_name, setFirstName] = useState('');
+  const [last_name, setSecondName] = useState('');
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState(true);
@@ -85,11 +85,11 @@ const RegisterScreen = ({navigation}) => {
       
     // }
     setErrortext('');
-    if (!firstName) {
+    if (!first_name) {
       alert('Please fill your First Name');
       return;
     }
-    if (!secondName) {
+    if (!last_name) {
       alert('Please fill your Second Name');
       return;
     }
@@ -407,10 +407,10 @@ const RegisterScreen = ({navigation}) => {
                   handleSubmitButton();
                     if (title === 'Doctor') {
                       // navigation.navigate('RegisterScreen2Doctors');
-                      navigation.navigate('RegisterScreen2Doctors', { firstName, secondName, email,password1,password2, mobileNumber,title });
+                      navigation.navigate('RegisterScreen2Doctors', { first_name,  last_name, email,password1,password2, mobileNumber,title });
                     } else if (title === 'Patient') {
                       // navigation.navigate('RegisterScreen2Patients');
-                      navigation.navigate('RegisterScreen2Patients', { firstName, secondName, email,password1,password2,mobileNumber,title });
+                      navigation.navigate('RegisterScreen2Patients', { first_name, last_name, email,password1,password2,mobileNumber,title });
                     }
                   
                 }}>

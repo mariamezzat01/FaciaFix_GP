@@ -14,19 +14,21 @@ import {
 import Loader from '../Components/loader';
 import {images , colors} from '../assets/assets';
 import Input from '../assets/input';
-
+import {launchImageLibrary} from 'react-native-image-picker';
 import Parse from 'parse/react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const RegisterScreen2Patients = ({navigation})=> {
-    const route = useRoute();
+    // const route = useRoute();
     // const navigation = useNavigation();
 
     const [gender, setGender] = useState('');
     const [age, setAge] = useState('');
+    const [imageData, setImageData] = useState('');
+    const [imageUri, setImageUri] = useState('');
 
     const [loading, setLoading] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedGenderImage, setSelectedGenderImage] = useState(null);
     const [errortext, setErrortext] = useState('');
     // const [
     //     isRegistraionSuccess,
@@ -35,25 +37,65 @@ const RegisterScreen2Patients = ({navigation})=> {
     
     const ageInputRef = createRef();
     const genderOptions = ['Male', 'Female'];
-    const selectImage = () => {
+
+    const handleImage = async () => {
         const options = {
-          title: 'Select Image',
-          storageOptions: {
-            skipBackup: true,
-            path: 'images',
-          },
+            mediaType: 'photo',
         };
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel) {
-              console.log('User cancelled image picker');
-            } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-            } else {
-              const source = { uri: response.uri };
-              setSelectedImage(source);
+
+        try {
+            const result = await launchImageLibrary(options);
+
+            if (result.didCancel) {
+            console.log('User cancelled image picker');
+            return;
             }
-          });
+
+            const selectedImageUri = result.assets[0].uri;
+            setImageUri(selectedImageUri);
+            console.log('result', result);
+            const base64Image = await convertImageToBase64(selectedImageUri);
+            setImageData(base64Image);
+        } catch (error) {
+            console.log('Image picker error:', error);
+        }
         };
+
+    const convertImageToBase64 = async imageUri => {
+    try {
+        const response = await fetch(imageUri);
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        return new Promise((resolve, reject) => {
+        reader.onloadend = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = reject;
+        });
+    } catch (error) {
+        console.log('Error converting image to Base64:', error);
+     }
+    };
+    // const selectImage = () => {
+    //     const options = {
+    //       title: 'Select Image',
+    //       storageOptions: {
+    //         skipBackup: true,
+    //         path: 'images',
+    //       },
+    //     };
+    //     ImagePicker.showImagePicker(options, (response) => {
+    //         if (response.didCancel) {
+    //           console.log('User cancelled image picker');
+    //         } else if (response.error) {
+    //           console.log('ImagePicker Error: ', response.error);
+    //         } else {
+    //           const source = { uri: response.uri };
+    //           setSelectedImage(source);
+    //         }
+    //       });
+    //     };
 
         const doUserSignUp = async () => {
             const { firstName, secondName, email, password, mobileNumber,title } = route.params;
@@ -247,13 +289,37 @@ const RegisterScreen2Patients = ({navigation})=> {
                 );
             })}
             </View>
-            {selectedImage && (
-        <Image source={selectedImage} style={{ width: 200, height: 200 }} />
-      )}
+            {selectedGenderImage && (
+        <Image source={selectedGenderImage} style={{ width: 200, height: 200 }} />
+    )}
 
-      <TouchableOpacity onPress={selectImage}>
         <Text style ={styles.label}> Upload Image</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+            style={styles.uploadImage}
+            onPress={() => {
+            handleImage();
+            }}>
+            <View
+            style={[
+                {borderColor: imageUri ? 'white' : '#E2E6EA'},
+                styles.uploadFrame,
+            ]}>
+            {imageUri && (
+                <Image
+                style={styles.uploadImageStyle}
+                source={{uri: imageUri}}
+                />
+            )}
+            {!imageUri ? (
+                <Text style={styles.clickText}>
+                Click to browse {'\n'} your files
+                </Text>
+            ) : (
+                ''
+            )}
+            </View>
+        </TouchableOpacity>
+    
             {errortext != '' ? (
                 <Text style={styles.errorTextStyle}>
                 {errortext}
@@ -396,5 +462,28 @@ const styles = StyleSheet.create({
         height: 15,
         borderRadius: 10,
         backgroundColor:colors.green,
+    },
+    uploadImage: {
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    uploadFrame: {
+        borderWidth: 1,
+        borderStyle:'dashed',
+        borderColor: colors.borderColor,
+        borderRadius: 20,
+        width: 350,
+        height: 200,
+        justifyContent:'center',
+    },
+    uploadImageStyle: {
+        width: 350,
+        height: 200,
+        borderRadius: 20,
+    },
+    clickText: {
+        color: '#8b9cb5',
+        fontSize: 15,
+        textAlign: 'center',
     }
     });
