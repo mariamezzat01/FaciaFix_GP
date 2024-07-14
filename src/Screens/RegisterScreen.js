@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, {useState, useEffect,createRef} from 'react';
 import {
   StyleSheet,
@@ -10,28 +9,40 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from 'react-native';
 
 import Loader from '../Components/loader';
 import {images, colors} from '../assets/assets';
-import Input from '../assets/input';
 import emailValidator from 'email-validator';
+import PopUpModal from '../Components/popUpModal';
 import { useNavigation } from '@react-navigation/native';
 
-const RegisterScreen = ({navigation}) => {
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setSecondName] = useState('');
+const RegisterScreen = () => {
+  const navigation = useNavigation();
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setSecondName] = useState('');
   const [email, setEmail] = useState('');
-  const [password1, setPassword1] = useState('');
-  const [password2, setPassword2] = useState(true);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(true);
   const [mobileNumber, setmobileNumber] = useState('');
   const [title, setTitle] = useState('');
 
   const [loading, setLoading] = useState(false);
-  const [errortext, setErrortext] = useState('');
+  const [text, setText] = useState("");
+  const [error, setError] = useState(false);
+  const [modalVisible, setModalVisible] = useState("");
 
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isPasswordShown, setIsPasswordShown] = useState(true);
+
+  const secondNameInputRef = createRef();
+  const emailInputRef = createRef();
+  const passwordInputRef = createRef();
+  const confirmPasswordInputRef = createRef();
+  const mobileInputRef = createRef();
+  const titleOptions = ['patient', 'doctor'];
 
   const [passwordValidations, setPasswordValidations] = useState({
     minValueValidation: false,
@@ -39,25 +50,9 @@ const RegisterScreen = ({navigation}) => {
     capitalLetterValidation: false,
     specialCharacterValidation: false,
   });
-  const [submitValidation, setSubmitValidation] = useState({
-    firstNameValidation: false,
-    secondNameValidation: false,
-    emailValidation: false,
-    passwordValidation: false,
-    confirmPasswordValidation: false,
-    mobileNumberValidation: false,
-    titleValidation: false,
-  });
-
-  const secondNameInputRef = createRef();
-  const emailInputRef = createRef();
-  const passwordInputRef = createRef();
-  const confirmPasswordInputRef = createRef();
-  const mobileInputRef = createRef();
-  const titleOptions = ['Patient', 'Doctor'];
 
   const handlePasswordChange = newPassword => {
-    setPassword1(newPassword);
+    setPassword(newPassword);
     validatePassword(newPassword);
   };
   const validatePassword = newPassword => {
@@ -69,77 +64,103 @@ const RegisterScreen = ({navigation}) => {
     });
   };
 
-  // const navigation = useNavigation();
   const handleSubmitButton = () => {
-    // setSubmitValidation({
-    //   firstNameValidation: firstName,
-    //   secondNameValidation: secondName,
-    //   emailValidation: email,
-    //   passwordValidation: password,
-    //   confirmPasswordValidation: confirmPassword,
-    //   mobileNumberValidation: mobileNumber,
-    //   titleValidation: title,
-
-    // });
-    // if (submitValidation){
-      
-    // }
-    setErrortext('');
-    if (!first_name) {
-      alert('Please fill your First Name');
+    setText('');
+    if (!firstName) {
+      setText('Please fill your First Name');
+      setModalVisible(true);
+      setError(true);
       return;
     }
-    if (!last_name) {
-      alert('Please fill your Second Name');
+    if (!lastName) {
+      setText('Please fill your Second Name');
+      setModalVisible(true);
+      setError(true);
       return;
     }
     if (!email) {
-      alert('Please fill Email');
+      setText('Please fill Email');
+      setModalVisible(true);
+      setError(true);
       return;
     } else if (!emailValidator.validate(email)) {
-      alert('Please enter a valid email address');
+      setText('Please enter a valid email address');
+      setModalVisible(true);
+      setError(true);
       return;
     }
-    if (!password1) {
-      alert('Please fill your Password');
+    if (!password) {
+      setText('Please fill your Password');
+      setModalVisible(true);
+      setError(true);
       return;
     }
-    if (!password2) {
-      alert('Please confirm your Password');
+    if (!confirmPassword) {
+      setText('Please confirm your Password');
+      setModalVisible(true);
+      setError(true);
       return;
     }
     if (!title) {
-      alert('Please select your title');
+      setText('Please select your title');
+      setModalVisible(true);
+      setError(true);
       return;
     }
-    if (password1 !== password2) {
-      alert('Passwords do not match');
+    if (password !== confirmPassword) {
+      setText('Passwords do not match');
+      setModalVisible(true);
+      setError(true);
       return;
     }
-    validatePassword(password1);
+    validatePassword(password);
     if (
       !passwordValidations.minValueValidation ||
       !passwordValidations.numberValidation ||
       !passwordValidations.capitalLetterValidation ||
       !passwordValidations.specialCharacterValidation
     ) {
-      alert('Password is not valid. Please check the requirements.');
+      setText('Password is not valid, Please check the requirements.');
+      setModalVisible(true);
+      setError(true);
       return;
     }
     if (!mobileNumber) {
-      alert('Please fill Mobile Number');
+      setText('Please fill Mobile Number');
+      setModalVisible(true);
+      setError(true);
       return;
     } else if (!/^\d{11}$/.test(mobileNumber)) {
-      alert('Please enter a valid 11-digit mobile number');
+      setText('Please enter a valid 11-digit mobile number');
+      setModalVisible(true);
+      setError(true);
       return;
     } else if (mobileNumber.charAt(0) !== '0') {
-      alert('Mobile Number should start with 0');
+      setText('Mobile Number should start with 0');
+      setModalVisible(true);
+      setError(true);
       return;
+    }
+    const formData = new FormData();
+
+    formData.append('first_name', firstName);
+    formData.append('last_name', lastName);
+    formData.append('email', email);
+    formData.append('password1', password);
+    formData.append('password2', confirmPassword);
+    formData.append('mobileNumber', mobileNumber);
+    formData.append('title', title);
+
+    if (title === 'doctor') {
+      navigation.navigate('RegisterScreen2Doctors',  formData );
+    } else if (title === 'patient') {
+      navigation.navigate('RegisterScreen2Patients',formData);
     }
   };
   return (
     <View style={styles.mainBody}>
       <Loader loading={loading} />
+      <PopUpModal modalVisible={modalVisible} setModalVisible={setModalVisible} error={error} text={text}/>
       <View style={styles.upperSection}>
         <Image source={images.upperImage} style={styles.roundedImage} />
       </View>
@@ -172,31 +193,6 @@ const RegisterScreen = ({navigation}) => {
                   blurOnSubmit={false}
                 />
               </View>
-              {/* <Input  
-                          label="First Name"
-                          imageSource={images.user}
-                          onChangeText={(FirstName) => setFirstName(FirstName)}
-                          placeholder="Enter your First Name"
-                          autoCapitalize="sentences"
-                          keyboardType="default"
-                          onSubmitEditing={() =>
-                              secondNameInputRef.current && secondNameInputRef.current.focus()
-                          }
-                          returnKeyType="next"
-                      /> */}
-              {/* <Input  
-                          label="Second Name"
-                          imageSource={images.user}
-                          onChangeText={(SecondName) => setSecondName(SecondName)}
-                          placeholder="Enter your First Name"
-                          autoCapitalize="sentences"
-                          keyboardType="default"
-                          ref={secondNameInputRef}
-                          onSubmitEditing={() =>
-                              emailInputRef.current && emailInputRef.current.focus()
-                          }
-                          returnKeyType="next"
-                      /> */}
               <Text style={styles.label}>Second Name</Text>
               <View style={styles.inputBar}>
                 <Image source={images.user} style={styles.icon} />
@@ -240,7 +236,7 @@ const RegisterScreen = ({navigation}) => {
                   style={styles.inputStyle}
                   onChangeText={handlePasswordChange}
                   onFocus={() => setIsPasswordFocused(true)}
-                  onBlur={() => setIsPasswordFocused(true)}
+                  onBlur={() => setIsPasswordFocused(false)}
                   underlineColorAndroid="#f000"
                   placeholder="Enter your Password"
                   placeholderTextColor="#8b9cb5"
@@ -307,7 +303,7 @@ const RegisterScreen = ({navigation}) => {
                 <TextInput
                   style={styles.inputStyle}
                   onChangeText={password2 =>
-                    setPassword2(password2)
+                    setConfirmPassword(password2)
                   }
                   underlineColorAndroid="#f000"
                   placeholder="Re-Enter your Password"
@@ -345,7 +341,7 @@ const RegisterScreen = ({navigation}) => {
                   placeholderTextColor="#8b9cb5"
                   autoCapitalize="none"
                   ref={mobileInputRef}
-                  returnKeyType="next"
+                  returnKeyType="done"
                   onSubmitEditing={Keyboard.dismiss}
                   blurOnSubmit={false}
                 />
@@ -363,17 +359,25 @@ const RegisterScreen = ({navigation}) => {
                           <View style={styles.innerCircle} />
                         ) : null}
                       </View>
-                      {titleOption == 'Patient' ? (
-                        <Image
-                          source={images.patient}
-                          style={{
-                            width: 20,
-                            height: 20,
-                            marginLeft: 10,
-                            marginTop: -4,
-                          }}
-                        />
+                      {titleOption == 'patient' ? (
+                        <>
+                          <Image
+                            source={images.patient}
+                            style={{
+                              width: 20,
+                              height: 20,
+                              marginLeft: 10,
+                              marginTop: -4,
+                            }}
+                          />
+                          <Text style={{
+                          color: colors.darkBlue,
+                          marginLeft: 5,
+                          marginTop: -2,
+                        }}>Patient</Text>
+                        </>
                       ) : (
+                        <>
                         <Image
                           source={images.doctor}
                           style={{
@@ -383,37 +387,21 @@ const RegisterScreen = ({navigation}) => {
                             marginTop: -4,
                           }}
                         />
-                      )}
-                      <Text
-                        style={{
+                        <Text style={{
                           color: colors.darkBlue,
                           marginLeft: 5,
                           marginTop: -2,
-                        }}>
-                        {titleOption}
-                      </Text>
+                        }}>Doctor</Text>
+                        </>
+                      )}
                     </TouchableOpacity>
                   );
                 })}
               </View>
-              {errortext != '' ? (
-                <Text style={styles.errorTextStyle}>{errortext}</Text>
-              ) : null}
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                // onPress={{handleSubmitButton}}>
-                onPress={() => {
-                  handleSubmitButton();
-                    if (title === 'Doctor') {
-                      // navigation.navigate('RegisterScreen2Doctors');
-                      navigation.navigate('RegisterScreen2Doctors', { first_name,  last_name, email,password1,password2, mobileNumber,title });
-                    } else if (title === 'Patient') {
-                      // navigation.navigate('RegisterScreen2Patients');
-                      navigation.navigate('RegisterScreen2Patients', { first_name, last_name, email,password1,password2,mobileNumber,title });
-                    }
-                  
-                }}>
+                onPress={handleSubmitButton}>
                 <Text style={styles.buttonTextStyle}>Next</Text>
               </TouchableOpacity>
               <Text
@@ -495,8 +483,8 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     borderRadius: 30,
-    marginLeft: 35,
-    marginRight: 35,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     marginTop: 20,
     marginBottom: 25,
   },
@@ -517,9 +505,43 @@ const styles = StyleSheet.create({
     color: colors.darkBlue,
   },
   errorTextStyle: {
-    color: 'red',
-    textAlign: 'center',
-    fontSize: 14,
+    color: "red",
+    textAlign: "center",
+    fontSize: 16,
+  },
+  modalView:{
+    backgroundColor: 'white',
+    borderRadius: 30,
+    padding: 15,
+    elevation: 5,
+    minWidth: '70%',
+    maxWidth: '85%',
+    marginTop: 22,
+    flexDirection:'colomn',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  closeButton: {
+    alignItems:'flex-end',
+  },
+  closeButtonText: {
+    color: colors.darkBlue,
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginLeft:10,
+    marginRight:10,
+    paddingTop:20,
+  },
+  textModal:{
+    flexDirection:'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft:10,
+    marginRight:10,
   },
   successTextStyle: {
     color: 'white',

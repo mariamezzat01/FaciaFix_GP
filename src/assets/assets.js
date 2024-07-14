@@ -1,4 +1,5 @@
-/* eslint-disable prettier/prettier */
+import { logout } from "../store/api";
+
 export const images = {
     faciaFixLogo:require("./images/FaciaFix.png"),
     upperImage:require("./images/upper_image1.png"),
@@ -12,20 +13,34 @@ export const images = {
     female:require("./images/femenine.png"),
     patient:require("./images/patient.png"),
     doctor:require("./images/doctor.png"),
-    backArrow:require("./images/return.png"),
-    profilePicture:require("./images/pp.png"),
-    search:require("./images/search.png"),
+    logout:require("./images/power.png"),
+    profilePicture:require("./images/bluePP.png"),
     progress:require("./images/progress.png"),
+    blueProgress:require("./images/blueProgress.png"),
     stethoscope:require("./images/stethoscope.png"),
     assessment:require("./images/assesement.png"),
     results:require("./images/results.png"),
+    resultsBlue:require("./images/resultsBlue.png"),
     right:require("./images/right.png"),
     wrong:require("./images/wrong.png"),
-    camera:require("./images/camera.png"),
+    add:require("./images/add.png"),
+    scan:require("./images/scan.png"),
     home:require("./images/home.png"),
     profileGreen:require("./images/profileGreen.png"),
     profileBlue:require("./images/profileBlue.png"),
     check:require("./images/check.png"),
+    delete:require("./images/delete.png"),
+    data:require('./images/data.png'),
+    error:require('./images/mark.png'),
+    logoutMintGreen:require("./images/logoutMintGreen.png"),
+    openCamera:require("./images/openCamera.png"),
+    uploadImage:require("./images/uploadImage.png"),
+    profileMale:require("./images/profileMale.png"),
+    profileFemale:require("./images/profileFemale.png"),
+    doctorMale:require("./images/doctorMale.png"),
+    doctorFemale:require("./images/doctorFemale.png"),
+
+    
 };
 
 export const colors = {
@@ -33,11 +48,12 @@ export const colors = {
   blueFF: '#104773',
   blueLogo: '#005898',
   darkBlue: '#173156',
-  darkRed: '#5D002A',
+  darkRed: '#5F002C',
   gray1: '#444444',
   lightGray: '#8b9cb5',
   gray2: '#393B3E',
   borderColor: '#dadae8',
   green: '#60ACB6',
   mintGreen: '#DAECF0',
+  darkGreen:'#41868F',
 };

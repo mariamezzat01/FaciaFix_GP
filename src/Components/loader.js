@@ -1,12 +1,34 @@
-// Example of Splash, Login and Sign Up in React Native
-// https://aboutreact.com/react-native-login-and-signup/
-
-// Import React and Component
-import React from 'react';
-import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
+import { colors } from "../assets/assets";
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native';
 
 const Loader = (props) => {
-  const {loading, ...attributes} = props;
+  const { loading, ...attributes } = props;
+
+  const initialLoaderStyles = [
+    { backgroundColor: colors.blueFF, color: colors.blueFF },
+    { backgroundColor: colors.blueLogo, color: colors.blueLogo },
+    { backgroundColor: colors.green, color: colors.green },
+    { backgroundColor: colors.mintGreen, color: colors.mintGreen },
+    { backgroundColor: colors.white, color: colors.white },
+  ];
+
+  const [loaderColors, setLoaderColors] = useState(initialLoaderStyles);
+
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setLoaderColors(prevColors => {
+          const newColors = [...prevColors];
+          const shiftedColor = newColors.pop(); // Remove the last color
+          newColors.unshift(shiftedColor); // Add it to the beginning
+          return newColors;
+        });
+      }, 500); // Adjust the duration as needed
+
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
 
   return (
     <Modal
@@ -18,12 +40,22 @@ const Loader = (props) => {
       }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
-          <ActivityIndicator
-            animating={true}
-            color="#000000"
-            size="large"
-            style={styles.activityIndicator}
-          />
+          {loaderColors.map((style, index) => (
+            <View
+              key={index}
+              style={[
+                styles.individualIndicatorWrapper,
+                { backgroundColor: style.backgroundColor },
+              ]}
+            >
+              <ActivityIndicator
+                animating={true}
+                color={style.color}
+                size="small"
+                style={styles.activityIndicator}
+              />
+            </View>
+          ))}
         </View>
       </View>
     </Modal>
@@ -38,19 +70,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
     justifyContent: 'space-around',
-    backgroundColor: '#00000040',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
   },
   activityIndicatorWrapper: {
-    backgroundColor: '#FFFFFF',
-    height: 100,
-    width: 100,
-    borderRadius: 10,
+    height: 50,
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  individualIndicatorWrapper: {
+    height: 25,
+    width: 25,
+    borderRadius: 25,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
+    marginHorizontal: 5,
   },
   activityIndicator: {
-    alignItems: 'center',
-    height: 80,
+    height: 30,
   },
 });

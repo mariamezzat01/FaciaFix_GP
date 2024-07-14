@@ -6,39 +6,72 @@ import {
     Text,
     Image,
     KeyboardAvoidingView,
-    Keyboard,
     TouchableOpacity,
     ScrollView,
+    Modal,
+    TouchableWithoutFeedback,
 } from 'react-native';
-// import ImagePicker from 'react-native-image-picker';
 import Loader from '../Components/loader';
 import {images , colors} from '../assets/assets';
-import Input from '../assets/input';
+
+import Axios from '../Network/axios';
+import { register } from "../store/api";
+import RNFS from 'react-native-fs';
+import {useDispatch} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
-import Parse from 'parse/react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation} from '@react-navigation/native';
+import  {setCurrentPatient}  from '../store/slices/patient';
+import  {setToken}  from '../store/slices/token';
+import DatePicker, { getToday ,getFormatedDate } from 'react-native-modern-datepicker';
+import PopUpModal from '../Components/popUpModal';
 
-const RegisterScreen2Patients = ({navigation})=> {
-    // const route = useRoute();
-    // const navigation = useNavigation();
 
+
+const RegisterScreen2Patients = ({route})=> {
+    const navigation = useNavigation();
     const [gender, setGender] = useState('');
-    const [age, setAge] = useState('');
-    const [imageData, setImageData] = useState('');
-    const [imageUri, setImageUri] = useState('');
+
+    const [eyeUri, setEyeUri] = useState('');
+    const [eyeImage, setEyeImage] = useState('');
+    
+    const [mouthUri, setMouthUri] = useState('');
+    const [mouthImage, setMouthImage] = useState('');
+    
+    const [eyebrowUri, setEyebrowUri] = useState('');
+    const [eyebrowsImage, setEyeBrowImage] = useState('');
+
+    const [birthdate, setBirthDate] = useState();
+    const [displaymode, setMode] = useState('calendar');
+    const [isDisplayDate, setShow] = useState(false);
+    const [dateText, setDateText] = useState('Select Birthdate');
 
     const [loading, setLoading] = useState(false);
-    const [selectedGenderImage, setSelectedGenderImage] = useState(null);
-    const [errortext, setErrortext] = useState('');
-    // const [
-    //     isRegistraionSuccess,
-    //     setIsRegistraionSuccess
-    // ] = useState(false);
+    const [text, setText] = useState('');
+    const [error, setError] = useState(false);
+    const [modalVisible, setModalVisible] = useState("");
+
+
+    const changeSelectedDate = (selectedDate) => {
+        const [year, month, day] = selectedDate.split('/');
+        const date = new Date(year, month - 1, day);
+        const formattedDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()}`;
+        setBirthDate(formattedDate);
+        setDateText(formattedDate);
+        setShow(false);
+    };
+
+    const displayDatepicker = () => {
+        setShow(true);
+    };
     
-    const ageInputRef = createRef();
+    const today  = new Date();
+    const startDate = getFormatedDate(today.setDate(today.getDate() + 1, 'YYYY/MM/DD'));
+    
     const genderOptions = ['Male', 'Female'];
 
-    const handleImage = async () => {
+    const dispatch = useDispatch();
+
+    const handleImage = async (type) => {
         const options = {
             mediaType: 'photo',
         };
@@ -47,304 +80,266 @@ const RegisterScreen2Patients = ({navigation})=> {
             const result = await launchImageLibrary(options);
 
             if (result.didCancel) {
-            console.log('User cancelled image picker');
+                console.log('User cancelled image picker');
             return;
             }
-
-            const selectedImageUri = result.assets[0].uri;
-            setImageUri(selectedImageUri);
-            console.log('result', result);
-            const base64Image = await convertImageToBase64(selectedImageUri);
-            setImageData(base64Image);
+            const selectedImage = result.assets[0];
+            switch (type) {
+                case 'eye':
+                    setEyeUri(selectedImage.uri);
+                    setEyeImage(selectedImage);
+                    break;
+                case 'mouth':
+                    setMouthUri(selectedImage.uri);
+                    setMouthImage(selectedImage);
+                    break;
+                case 'eyebrow':
+                    setEyebrowUri(selectedImage.uri);
+                    setEyeBrowImage(selectedImage);
+                    break;
+                default:
+                    break;
+            }
         } catch (error) {
             console.log('Image picker error:', error);
         }
-        };
-
-    const convertImageToBase64 = async imageUri => {
-    try {
-        const response = await fetch(imageUri);
-        const blob = await response.blob();
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        return new Promise((resolve, reject) => {
-        reader.onloadend = () => {
-            resolve(reader.result);
-        };
-        reader.onerror = reject;
-        });
-    } catch (error) {
-        console.log('Error converting image to Base64:', error);
-     }
     };
-    // const selectImage = () => {
-    //     const options = {
-    //       title: 'Select Image',
-    //       storageOptions: {
-    //         skipBackup: true,
-    //         path: 'images',
-    //       },
-    //     };
-    //     ImagePicker.showImagePicker(options, (response) => {
-    //         if (response.didCancel) {
-    //           console.log('User cancelled image picker');
-    //         } else if (response.error) {
-    //           console.log('ImagePicker Error: ', response.error);
-    //         } else {
-    //           const source = { uri: response.uri };
-    //           setSelectedImage(source);
-    //         }
-    //       });
-    //     };
 
-        const doUserSignUp = async () => {
-            const { firstName, secondName, email, password, mobileNumber,title } = route.params;
-    
-            return await Parse.User.signUp(email, password, {
-                firstName,
-                secondName,
-                mobileNumber,
-                title,
-                gender,
-                age,
-            })
-            .then((createdUser) => {
-                // Alert.alert(
-                //     'Success!',
-                //     `User ${createdUser.get('username')} was successfully created!`,
-                // );
-                navigation.navigate('PatientsHomeScreen');
-                // navigation.replace('Patients');
-                return true;
-            })
-            .catch((error) => {
-                Alert.alert('Error!', error.message);
-                return false;
-            });
-        };
+
     const handleSubmitButton = async () => {
-        setErrortext('');
-        if (!age) {
-        alert('Please fill Age');
-        return;
-        }
-        if (!gender) {
-            alert('Please select your Gender');
+        setText('');
+        if (!birthdate) {
+            setText('Please select your Birthdate');
+            setModalVisible(true);
+            setError(true);
             return;
         }
-        const signUpSuccess = await doUserSignUp();
+        if (!gender) {
+            setText('Please select your Gender');
+            setModalVisible(true);
+            setError(true);
+            return;
+        }
+        if (!eyeImage) {
+            setText('Please upload an eye closure image');
+            setModalVisible(true);
+            setError(true);
+            return;
+        }
+        if (!mouthImage) {
+            setText('Please upload a smiling image');
+            setModalVisible(true);
+            setError(true);
+            return;
+        }
+        if (!eyebrowsImage) {
+            setText('Please upload a raising eyebrows image ');
+            setModalVisible(true);
+            setError(true);
+            return;
+        }
+        // const formData = new FormData();
+        const  formData  = route.params;
 
-        //Show Loader
-        setLoading(true);
-        // var dataToSend = {
-        //     age: age,
-        //     gender:gender,
-        //     };
-        //     var formBody = [];
-        //     for (var key in dataToSend) {
-        //     var encodedKey = encodeURIComponent(key);
-        //     var encodedValue = encodeURIComponent(dataToSend[key]);
-        //     formBody.push(encodedKey + '=' + encodedValue);
+        // formData.append('first_name', 'Amira');
+        // formData.append('last_name', 'Mohamed');
+        // formData.append('email', 'amira@gmail.com');
+        // formData.append('password1', 'amiraamira');
+        // formData.append('password2', 'amira');
+        // formData.append('mobileNumber', '01003982004');
+        // formData.append('title', 'Patient');
+        // formData.append('birthdate', "2001-04-07");
+        formData.append('birthdate', birthdate);
+        formData.append('gender', gender);
+        formData.append('original_image_eye', { 
+            uri: eyeImage.uri,
+            name: eyeImage.fileName,
+            type: eyeImage.type,
+        });
+        formData.append('original_image_mouth', { 
+            uri: mouthImage.uri,
+            name: mouthImage.fileName,
+            type: mouthImage.type,
+        });
+        formData.append('original_image_eyebrows', {
+            uri: eyebrowsImage.uri,
+            name: eyebrowsImage.fileName,
+            type: eyebrowsImage.type,
+        });
+
+        register(formData, dispatch,navigation,setError,setModalVisible,setText,setLoading);
+
+        // try {
+        //     const response = await Axios.post('/register/', formData, {
+        //         headers: {
+        //             'Content-Type': 'multipart/form-data',
+        //         },
+        //     });
+
+        //     console.log('response:', response);
+
+        //     if (response.status === 200 || response.status === 201) {
+        //         dispatch(setCurrentPatient(response.data));
+        //         dispatch(setToken(response.data.token));
+        //         setLoading(false);
+        //         navigation.navigate('PatientsHomeScreen');
+        //     } else {
+        //         setText(response.data.non_field_errors);
+        //         setModalVisible(true);
+        //         setLoading(false);
         //     }
-        //     formBody = formBody.join('&');
-    
-            // fetch('http://localhost:3000/api/user/register', {
-            //   method: 'POST',
-            //   body: formBody,
-            //   headers: {
-            //     //Header Defination
-            //     'Content-Type':
-            //     'application/x-www-form-urlencoded;charset=UTF-8',
-            //   },
-            // })
-            //   .then((response) => response.json())
-            //   .then((responseJson) => {
-            //     //Hide Loader
-            //     setLoading(false);
-            //     console.log(responseJson);
-            //     // If server response message same as Data Matched
-            //     if (responseJson.status === 'success') {
-            //       setIsRegistraionSuccess(true);
-            //       console.log(
-            //         'Registration Successful. Please Login to proceed'
-            //       );
-            //     } else {
-            //       setErrortext(responseJson.msg);
-            //     }
-            //   })
-            //   .catch((error) => {
-            //     //Hide Loader
-            //     setLoading(false);
-            //     console.error(error);
-            //   });
-            // setLoading(false);
-            // setIsRegistraionSuccess(true);
-            // console.log(
-            //     'Registration Successful. Please Login to proceed'
-            //     );
-            //     if (signUpSuccess) {
-            //         return (
-            //         <View
-            //             style={{
-            //             flex: 1,
-            //             backgroundColor: '#307ecc',
-            //             justifyContent: 'center',
-            //             }}>
-            //             {/* <Image
-            //             // source={require('../../Image/success.png')}
-            //             style={{
-            //                 height: 150,
-            //                 resizeMode: 'contain',
-            //                 alignSelf: 'center'
-            //             }}
-            //             /> */}
-            //             <Text style={styles.successTextStyle}>
-            //             Registration Successful
-            //             </Text>
-            //             <TouchableOpacity
-            //             style={styles.buttonStyle}
-            //             activeOpacity={0.5}
-            //             onPress={() => navigation.navigate('LoginScreen')}>
-            //             <Text style={styles.buttonTextStyle}>Login Now</Text>
-            //             </TouchableOpacity>
-            //         </View>
-            //         );
-            //     }
-            if (signUpSuccess) {
-                // Show success message or navigate to next screen
-                console.log('Registration Successful. Please Login to proceed');
-            } else {
-                // Handle sign up failure
-                console.log('Registration failed');
-            }
-};
+        // } catch (error) {
+        //     console.log('Registration error:', error);
+        //     setText('Registration failed. Please try again.');
+        //     setModalVisible(true);
+        //     setLoading(false);
+        // }
+    };
 
     return (
         <View style={styles.mainBody}>
-        <Loader loading={loading} />
-        <ScrollView
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-            justifyContent: 'center',
-            alignContent: 'center',
-            }}>
-        <View style={styles.upperSection}>
-            <Image
-            source={images.upperImage}
-            style={styles.roundedImage}
-            />
-        </View>
-        <KeyboardAvoidingView enabled>
-        <View style={styles.lowerSection}>
-            <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
-            <Text style ={styles.header}>
-            Sign Up
-            </Text>
-            <Text style ={styles.label}>
-            Age
-            </Text>
-            <View style={styles.inputBar}>
-                <TextInput
-                style={styles.inputStyle}
-                onChangeText={(Age) => setAge(Age)}
-                underlineColorAndroid="#f000"
-                placeholder="Enter your Age"
-                placeholderTextColor="#8b9cb5"
-                keyboardType="numeric"
-                ref={ageInputRef}
-                returnKeyType="next"
-                onSubmitEditing={() =>
-                    mobileInputRef.current &&
-                    mobileInputRef.current.focus()
-                }
-                blurOnSubmit={false}
-                />
-            </View>
-            <Text style ={styles.label}>
-                Gender
-            </Text>
-            <View style={styles.optionsContainer}>
-            {genderOptions.map(genderOption => {
-            return (
-                <TouchableOpacity
-                key={genderOption}
-                style={styles.singleOptionContainer}
-                onPress={() => setGender(genderOption)}>
-                <View style={styles.outerCircle}>
-                    {gender === genderOption ? (
-                    <View style={styles.innerCircle} />
-                    ) : null}
+            <Loader loading={loading} />
+            <PopUpModal modalVisible={modalVisible} setModalVisible={setModalVisible} error={error} text={text}/>
+                <ScrollView
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={{
+                    justifyContent: 'center',
+                    alignContent: 'center',}}>
+                <View style={styles.upperSection}>
+                    <Image source={images.upperImage} style={styles.roundedImage}/>
                 </View>
-                {genderOption == "Male"?( <Image
-                        source={images.male}
-                        style={{width:20,height:20,marginLeft:10,marginTop:-4}}
-                    />
-                    ) : (
+                <KeyboardAvoidingView enabled>
+                    <View style={styles.lowerSection}>
+                        <View style ={{backgroundColor:colors.white ,borderTopRightRadius:60}}>
+                            <Text style ={styles.header}>
+                                Sign Up
+                            </Text>
+                            <Text style={styles.label}>Birthdate</Text>
+                            <TouchableOpacity style={styles.inputBar} onPress={displayDatepicker}>
+                                <Text style={[styles.inputStyle, { color: dateText === 'Select Birthdate' ? '#8b9cb5' : colors.darkBlue }]}>
+                                    {dateText}
+                                </Text>
+                                    {isDisplayDate && (
+                                        <Modal animationType='slide' transparent={true}>
+                                            <TouchableWithoutFeedback onPress={()=>setShow(false)}>
+                                            <View style={styles.datePicker} >
+                                                <DatePicker
+                                                    options={{
+                                                        backgroundColor: colors.white,
+                                                        textHeaderColor: colors.blueFF,
+                                                        textDefaultColor: colors.blueLogo,
+                                                        selectedTextColor: colors.mintGreen,
+                                                        mainColor: colors.green,
+                                                        textSecondaryColor: colors.darkBlue,
+                                                        borderColor: colors.borderColor,
+                                                    }}
+                                                    mode={displaymode}
+                                                    selected={birthdate}
+                                                    maximumDate={startDate}
+                                                    style={{ borderRadius: 10 }}
+                                                    onDateChange={changeSelectedDate}/>
+                                                </View>
+                                                </TouchableWithoutFeedback>
+                                        </Modal>
+                                        )}
+                            </TouchableOpacity>
+                            <Text style ={styles.label}>
+                                Gender
+                            </Text>
+                            <View style={styles.optionsContainer}>
+                                {genderOptions.map(genderOption => {
+                                return (
+                                    <TouchableOpacity
+                                        key={genderOption}
+                                        style={styles.singleOptionContainer}
+                                        onPress={() => setGender(genderOption)}>
+                                        <View style={styles.outerCircle}>
+                                            {gender === genderOption ? 
+                                                ( <View style={styles.innerCircle} /> ) : null}
+                                        </View>
+                                        {genderOption == "male"?( 
+                    <>
                         <Image
-                        source={images.female}
-                        style={{width:20,height:20,marginLeft:10,marginTop:-4}}
-                    />)}
-                    <Text style ={{color: colors.darkBlue,marginLeft:5,marginTop:-2}}>{genderOption}</Text>
-                </TouchableOpacity>
-                );
-            })}
-            </View>
-            {selectedGenderImage && (
-        <Image source={selectedGenderImage} style={{ width: 200, height: 200 }} />
-    )}
-
-        <Text style ={styles.label}> Upload Image</Text>
-        <TouchableOpacity
-            style={styles.uploadImage}
-            onPress={() => {
-            handleImage();
-            }}>
-            <View
-            style={[
-                {borderColor: imageUri ? 'white' : '#E2E6EA'},
-                styles.uploadFrame,
-            ]}>
-            {imageUri && (
-                <Image
-                style={styles.uploadImageStyle}
-                source={{uri: imageUri}}
-                />
-            )}
-            {!imageUri ? (
-                <Text style={styles.clickText}>
-                Click to browse {'\n'} your files
-                </Text>
-            ) : (
-                ''
-            )}
-            </View>
-        </TouchableOpacity>
-    
-            {errortext != '' ? (
-                <Text style={styles.errorTextStyle}>
-                {errortext}
-                </Text>
-            ) : null}
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                activeOpacity={0.5}
-                onPress={handleSubmitButton}>
-                {/* onPress={() => {{handleSubmitButton};navigation.navigate('LoginScreen')}}> */}
-                <Text style={styles.buttonTextStyle}>Login</Text>
-            </TouchableOpacity>
-            <Text
-                style={styles.registerTextStyle}
-                onPress={() => navigation.navigate('LoginScreen')}>
-                Already have an account? <Text style={styles.a}>Login Here</Text> 
-            </Text>
+                            source={images.male}
+                            style={{width:20,height:20,marginLeft:10,marginTop:-4}}
+                        />
+                        <Text style ={{color: colors.darkBlue,marginLeft:5,marginTop:-2}}>Male</Text>
+                    </>
+                    ) : (
+                    <>
+                        <Image
+                            source={images.female}
+                            style={{width:20,height:20,marginLeft:10,marginTop:-4}}
+                        />
+                        <Text style ={{color: colors.darkBlue,marginLeft:5,marginTop:-2}}>Female</Text>
+                    </>
+                    )}
+                                    </TouchableOpacity>
+                                );
+                                })}
+                            </View>
+                            <Text style={styles.label}>Upload Raising Eyebrows Image</Text>
+                            <TouchableOpacity
+                                style={styles.uploadImage}
+                                onPress={() => handleImage('eyebrow')}>
+                                <View style={[{borderColor: eyebrowUri ? 'white' : '#E2E6EA'}, styles.uploadFrame,]}>
+                                    {eyebrowUri && (
+                                        <Image style={styles.uploadImageStyle} source={{uri: eyebrowUri}}/>
+                                    )}
+                                    {!eyebrowUri ? (
+                                        <Text style={styles.clickText}> Click to browse {'\n'} your files</Text>
+                                    ) : (
+                                        ''
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                            <Text style={styles.label}>Upload Eye Closure Image</Text>
+                            <TouchableOpacity
+                                style={styles.uploadImage}
+                                onPress={() => handleImage('eye')}>
+                                <View style={[{borderColor: eyeUri ? 'white' : '#E2E6EA'}, styles.uploadFrame,]}>
+                                    {eyeUri && (
+                                        <Image style={styles.uploadImageStyle} source={{uri: eyeUri}}/>
+                                    )}
+                                    {!eyeUri ? (
+                                        <Text style={styles.clickText}> Click to browse {'\n'} your files</Text>
+                                    ) : (
+                                        ''
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                            <Text style={styles.label}>Upload Smiling Image</Text>
+                            <TouchableOpacity
+                                style={styles.uploadImage}
+                                onPress={() => handleImage('mouth')}>
+                                <View style={[{borderColor: mouthUri? 'white' : '#E2E6EA'}, styles.uploadFrame,]}>
+                                    {mouthUri && (
+                                        <Image style={styles.uploadImageStyle} source={{uri: mouthUri}}/>
+                                    )}
+                                    {!mouthUri ? (
+                                        <Text style={styles.clickText}> Click to browse {'\n'} your files</Text>
+                                    ) : (
+                                        ''
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.buttonStyle}
+                                activeOpacity={0.5}
+                                onPress={handleSubmitButton}>
+                                <Text style={styles.buttonTextStyle}>Sign Up</Text>
+                            </TouchableOpacity>
+                            <Text
+                                style={styles.registerTextStyle}
+                                onPress={() => navigation.navigate('LoginScreen')}>
+                                Already have an account? <Text style={styles.a}>Login Here</Text> 
+                            </Text>
+                        </View>
+                    </View>
+                </KeyboardAvoidingView>
+            </ScrollView>
         </View>
-        </View>
-        </KeyboardAvoidingView>
-        </ScrollView>
-        </View>
-
     );
-
 };
 export default RegisterScreen2Patients;
 const styles = StyleSheet.create({
@@ -399,6 +394,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         flex: 1,
         color: colors.darkBlue,
+        alignSelf:'center',
     },
     buttonStyle: {
         backgroundColor: colors.green,
@@ -407,8 +403,8 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center',
         borderRadius: 30,
-        marginLeft: 35,
-        marginRight: 35,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         marginTop: 20,
         marginBottom: 25,
     },
@@ -472,18 +468,69 @@ const styles = StyleSheet.create({
         borderStyle:'dashed',
         borderColor: colors.borderColor,
         borderRadius: 20,
-        width: 350,
-        height: 200,
+        width: 303,
+        height: 303,
         justifyContent:'center',
+        alignItems:'center',
     },
     uploadImageStyle: {
-        width: 350,
-        height: 200,
+        width: 300,
+        height: 300,
         borderRadius: 20,
     },
     clickText: {
         color: '#8b9cb5',
         fontSize: 15,
         textAlign: 'center',
+    },
+    container: {
+        flex: 1,
+        backgroundColor: '#F5FCFF',
+    },
+
+    datePicker: {
+        flex: 1,
+        justifyContent: 'center',
+        padding:5,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+
+    errorTextStyle: {
+        color: "red",
+        textAlign: "center",
+        fontSize: 16,
+    },
+    modalView:{
+        backgroundColor: 'white',
+        borderRadius: 30,
+        padding: 15,
+        elevation: 5,
+        minWidth: '70%',
+        maxWidth: '85%',
+        marginTop: 22,
+        flexDirection:'colomn',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    closeButton: {
+        alignItems:'flex-end',
+    },
+    closeButtonText: {
+        color: colors.darkBlue,
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginLeft:10,
+        marginRight:10,
+    },
+    textModal:{
+        flexDirection:'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft:10,
+        marginRight:10,
     }
     });

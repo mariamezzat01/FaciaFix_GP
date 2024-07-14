@@ -2,20 +2,35 @@ import React, {useState, useEffect} from 'react';
 import {ActivityIndicator, View, StyleSheet, Image, Text} from 'react-native';
 import {images , colors} from '../assets/assets';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../Components/loader';
 
 const SplashScreen = ({navigation}) => {
   //State for ActivityIndicator animation
     const [animating, setAnimating] = useState(true);
 
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //     setAnimating(false);
+    //     //Check if user_id is set or not
+    //     //If not then send for Authentication
+    //     //else send to Home Screen
+    //     AsyncStorage.getItem('user_id').then(value =>
+    //         navigation.replace(value === null ? 'Auth' : 'DrawerNavigationRoutes'),
+    //     );
+    //     }, 5000);
+    // }, [navigation]);
+
     useEffect(() => {
-        setTimeout(() => {
-        setAnimating(false);
-        //Check if user_id is set or not
-        //If not then send for Authentication
-        //else send to Home Screen
-        AsyncStorage.getItem('user_id').then(value =>
-            navigation.replace(value === null ? 'Auth' : 'DrawerNavigationRoutes'),
-        );
+        setTimeout( async() => {
+            setAnimating(false);
+            const userType = await AsyncStorage.getItem('userType');
+            if (userType === 'patient') {
+                navigation.replace('PatientsScreens');
+            } else if (userType === 'doctor') {
+                navigation.replace('DoctorsScreen');
+            } else {
+                navigation.replace('Auth');
+            }
         }, 5000);
     }, [navigation]);
 
@@ -27,17 +42,18 @@ const SplashScreen = ({navigation}) => {
                 />
                 <ActivityIndicator
                     animating={animating}
-                    color="#FFFFFF"
                     size="large"
+                    color='#ffffff'
                     style={styles.activityIndicator}
                 />
             </View>
             <View>
                 <Text style ={styles.text}>
-                    " The simple way for early diagnosis "
+                    " The Simple Way for Early Diagnosis "
                 </Text>
             </View>
         </View>
+        
     );
 };
 
@@ -48,13 +64,14 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         backgroundColor: colors.blueFF,
+        justifyContent:'center',
     },
     activityIndicator: {
         alignItems: 'center',
         height: 90,
+        color:colors.white,
     },
     logo:{
-        marginTop: 100,
         alignItems: 'center',
     },
     text:{
@@ -63,3 +80,5 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     });
+
+

@@ -12,9 +12,19 @@ import LoginScreen from './src/Screens/LoginScreen';
 import RegisterScreen from './src/Screens/RegisterScreen';
 import RegisterScreen2Doctors from './src/Screens/RegisterScreen2Doctors';
 import RegisterScreen2Patients from './src/Screens/RegisterScreen2Patients';
-import PatientsHomeScreen from './src/Screens/PatientsHomeScreen';
-import PatientsEditProfile from './src/Screens/PatientsEditProfile';
-import DoctorListScreen from './src/Screens/doctorListScreen';
+import PatientsHomeScreen from './src/Screens/PatientsScreens/PatientsHomeScreen.js';
+import PatientsEditProfile from './src/Screens/PatientsScreens/PatientsEditProfile.js';
+import NewScanScreen from './src/Screens/PatientsScreens/NewScan.js';
+import PatientResults from './src/Screens/PatientsScreens/PatientResults.js';
+import Assessment from './src/Screens/PatientsScreens/Assessment.js';
+import Progress from './src/Screens/PatientsScreens/Progress.js';
+import DoctorsEditProfile from './src/Screens/DoctorsScreens/DoctorsEditProfile.js';
+import PatientsData from './src/Screens/DoctorsScreens/PatientsData.js';
+import DoctorListScreen from './src/Screens/PatientsScreens/doctorListScreen.js';
+import DoctorsHomeScreen from './src/Screens/DoctorsScreens/doctorsHomeScreen.js';
+import DoctorAssessment from './src/Screens/DoctorsScreens/DoctorAssessment.js';
+import Patients from './src/Screens/DoctorsScreens/Patients';
+import DoctorsProgress from './src/Screens/DoctorsScreens/DoctorsProgress.js';
 import { Provider } from 'react-redux';
 import store from './src/store/store';
 
@@ -52,29 +62,14 @@ const Auth = () => {
         component={RegisterScreen2Patients}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="PatientsHomeScreen"
-        component={PatientsHomeScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-      name="PatientsEditProfile"
-      component={PatientsEditProfile}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="doctorListScreen"
-        component={DoctorListScreen}
-        options={{headerShown: false}}
-      />
     </Stack.Navigator>
+    
   );
 };
 
-const Patients = () => {
-  // Stack Navigator for Login and Sign up Screen
+const PatientsScreens = () => {
   return (
-    <Stack.Navigator initialRouteName="LoginScreen">
+    <Stack.Navigator initialRouteName="PatientsHomeScreen">
       <Stack.Screen
         name="PatientsHomeScreen"
         component={PatientsHomeScreen}
@@ -86,7 +81,27 @@ const Patients = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="doctorListScreen"
+        name="PatientResults"
+        component={PatientResults}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Assessment"
+        component={Assessment}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Progress"
+        component={Progress}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="NewScanScreen"
+        component={NewScanScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorListScreen"
         component={DoctorListScreen}
         options={{headerShown: false}}
       />
@@ -95,28 +110,42 @@ const Patients = () => {
 };
 
 
-// const Doctors = () => {
-//   // Stack Navigator for Login and Sign up Screen
-//   return (
-//     <Stack.Navigator initialRouteName="LoginScreen">
-//       <Stack.Screen
-//         name="PatientsHomeScreen"
-//         component={PatientsHomeScreen}
-//         options={{headerShown: false}}
-//       />
-//       <Stack.Screen
-//       name="PatientsEditProfile"
-//       component={PatientsEditProfile}
-//         options={{headerShown: false}}
-//       />
-//       <Stack.Screen
-//         name="doctorListScreen"
-//         component={DoctorListScreen}
-//         options={{headerShown: false}}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
+const DoctorsScreen = () => {
+  return (
+    <Stack.Navigator initialRouteName="DoctorsHomeScreen">
+      <Stack.Screen
+        name="DoctorsEditProfile"
+        component={DoctorsEditProfile}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorsHomeScreen"
+        component={DoctorsHomeScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="PatientsData"
+        component={PatientsData}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Patients"
+        component={Patients}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorAssessment"
+        component={DoctorAssessment}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DoctorsProgress"
+        component={DoctorsProgress}
+        options={{headerShown: false}}
+      />
+    </Stack.Navigator>
+  );
+};
 
 const App = () => {
   return (
@@ -138,9 +167,13 @@ const App = () => {
           />
           {/* Navigation Drawer as a landing page */}
           <Stack.Screen
-            name="Patients"
-            component={Patients}
-            // Hiding header for Navigation Drawer
+            name="PatientsScreens"
+            component={PatientsScreens}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="DoctorsScreen"
+            component={DoctorsScreen}
             options={{headerShown: false}}
           />
         </Stack.Navigator>
